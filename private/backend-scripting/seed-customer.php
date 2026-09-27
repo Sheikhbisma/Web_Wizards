@@ -23,42 +23,40 @@ if (!empty($demoUser)) {
     }
 }
 
-$existingMk = selectData($pdo, "SELECT market_id FROM markets ORDER BY market_id");
+// Markets are resolved BY NAME, never by row position. Other markets may
+// exist in the table (id 1 "sihlm" here), and a positional read shifts every
+// index by one, which silently links farmers to the wrong market.
+$markets = [
+    ['Clifton Fresh Market', 'Plot 12, MCB Road, Clifton, Karachi', 24.81000000, 67.03000000, 'Tuesday,Thursday,Saturday', '07:00:00', '14:00:00'],
+    ['Gulshan Community Market', 'University Road, Gulshan-e-Iqbal, Karachi', 24.93300000, 67.07500000, 'Monday,Wednesday,Friday', '06:30:00', '13:30:00'],
+    ['Saddar Juma Bazaar', 'Zaibunnisa Street, Saddar, Karachi', 24.85400000, 67.03500000, 'Friday', '05:30:00', '12:00:00'],
+    ['North Nazimabad Green Market', 'Block H, North Nazimabad, Karachi', 24.95600000, 67.03300000, 'Tuesday,Friday,Sunday', '07:00:00', '15:00:00'],
+    ['Malir City Farm Market', 'Main Malir Halt Road, Karachi', 24.89700000, 67.19200000, 'Wednesday,Saturday', '06:00:00', '13:00:00'],
+];
+
 $marketIds = [];
-if (count($existingMk) >= 5) {
-    foreach ($existingMk as $m) {
-        $marketIds[] = (int)$m['market_id'];
+$newMarkets = 0;
+foreach ($markets as $m) {
+    $found = selectData($pdo, "SELECT market_id FROM markets WHERE market_name = ?", [$m[0]]);
+    if (!empty($found)) {
+        $marketIds[] = (int)$found[0]['market_id'];
+        continue;
     }
-    $msg .= 'Markets: already present (' . count($marketIds) . ')<br>';
-} else {
-    $markets = [
-        ['Clifton Fresh Market', 'Plot 12, MCB Road, Clifton, Karachi', 24.81000000, 67.03000000, 'Tuesday,Thursday,Saturday', '07:00:00', '14:00:00'],
-        ['Gulshan Community Market', 'University Road, Gulshan-e-Iqbal, Karachi', 24.93300000, 67.07500000, 'Monday,Wednesday,Friday', '06:30:00', '13:30:00'],
-        ['Saddar Juma Bazaar', 'Zaibunnisa Street, Saddar, Karachi', 24.85400000, 67.03500000, 'Friday', '05:30:00', '12:00:00'],
-        ['North Nazimabad Green Market', 'Block H, North Nazimabad, Karachi', 24.95600000, 67.03300000, 'Tuesday,Friday,Sunday', '07:00:00', '15:00:00'],
-        ['Malir City Farm Market', 'Main Malir Halt Road, Karachi', 24.89700000, 67.19200000, 'Wednesday,Saturday', '06:00:00', '13:00:00'],
-    ];
-    foreach ($markets as $m) {
-        if (mlCount($pdo, "SELECT COUNT(*) c FROM markets WHERE market_name = ?", [$m[0]]) > 0) {
-            $r = selectData($pdo, "SELECT market_id FROM markets WHERE market_name = ?", [$m[0]]);
-            $marketIds[] = (int)$r[0]['market_id'];
-            continue;
-        }
-        insertData($pdo, 'markets', [
-            'market_name'   => $m[0],
-            'address'       => $m[1],
-            'latitude'      => $m[2],
-            'longitude'     => $m[3],
-            'operating_days'=> $m[4],
-            'opening_time'  => $m[5],
-            'closing_time'  => $m[6],
-            'map_provider'  => 'OpenStreetMap',
-            'is_active'     => 1,
-        ]);
-        $marketIds[] = (int)$pdo->lastInsertId();
-    }
-    $msg .= 'Markets: ' . count($markets) . '<br>';
+    insertData($pdo, 'markets', [
+        'market_name'   => $m[0],
+        'address'       => $m[1],
+        'latitude'      => $m[2],
+        'longitude'     => $m[3],
+        'operating_days'=> $m[4],
+        'opening_time'  => $m[5],
+        'closing_time'  => $m[6],
+        'map_provider'  => 'OpenStreetMap',
+        'is_active'     => 1,
+    ]);
+    $marketIds[] = (int)$pdo->lastInsertId();
+    $newMarkets++;
 }
+$msg .= 'Markets: ' . count($marketIds) . ' (' . $newMarkets . ' new)<br>';
 
 $farmers = [
     ['AliRaza', 'ali.raza@gmail.com', '03331234567', 'Ayesha Farms', 'Ayesha Farms produce organic vegetables grown in Tando Adam, harvested before sunrise and at your gate by noon.', 'Plot 8, Farm Colony Tando Adam', 25.76310000, 68.66130000, 'Ali Raza'],
@@ -131,44 +129,55 @@ foreach ($links as $l) {
 }
 $msg .= 'Market links: ' . count($links) . ' (' . $addedLinks . ' new)<br>';
 
+// Layout: [farmerIdx, name, categoryId, price, unit, stock, description, imageFile]
+// The image is a bare filename resolved against public/Uploads/img/ by
+// prodImgSrc(). Keep it in sync with the files actually on disk, otherwise the
+// product falls back to a category icon tile.
+$uploadDir = __DIR__ . '/../../public/Uploads/img/';
 $products = [
-    [0, 'Tomatoes', 1, 120, '1kg', 80, 'Sun ripened desi tomatoes, tangy and juicy.'],
-    [0, 'Potatoes', 1, 90, '1kg', 60, 'Firm sandy-grown potatoes, perfect for sabzi and fries.'],
-    [0, 'Onions', 1, 150, '1kg', 50, 'Pungent red onions, stored crisp.'],
-    [0, 'Cucumbers', 1, 45, '1kg', 90, 'Cool greenhouse cucumbers, crunchy and hydrating.'],
-    [1, 'Mangoes Sindhri', 2, 40, '1kg', 350, 'Sweet aromatic Sindhri mangoes, orchard fresh.'],
-    [1, 'Oranges', 2, 75, '1kg', 160, 'Juicy kinnow oranges, seeded and sweet.'],
-    [1, 'Bananas', 2, 120, '1kg', 100, 'Ripe but firm bananas, bunch fresh.'],
-    [1, 'Strawberries', 2, 30, '250g', 320, 'Plump red strawberries, farm selected.'],
-    [2, 'Fresh Milk', 3, 60, '1L', 180, 'Raw desi milk, boiled and bottled every morning.'],
-    [2, 'Desi Butter', 3, 25, '500g', 700, 'Hand churned desi butter from pure cream.'],
-    [2, 'Desi Yogurt', 3, 40, '500g', 160, 'Thick, tangy desi dahi made from whole milk.'],
-    [2, 'Cream Malai', 3, 20, '250g', 240, 'Clotted cream collected from fresh milk.'],
-    [3, 'Whole Wheat Bread', 4, 35, '1 loaf', 150, 'Wood fired whole wheat loaf, baked at dawn.'],
-    [3, 'Sourdough Bread', 4, 25, '1 loaf', 260, 'Naturally leavened sourdough, crusty and light.'],
-    [3, 'Roti (12 pc)', 4, 30, 'pack', 120, 'Hand rolled chapati, soft and ready to warm.'],
-    [4, 'Fresh Mint', 5, 30, '100g', 60, 'Fragrant mint sprigs grown hydroponically.'],
-    [4, 'Coriander', 5, 30, '100g', 40, 'Tender coriander with deep green leaves.'],
-    [4, 'Basil', 5, 20, '50g', 110, 'Sweet basil ideal for sauces and salads.'],
-    [5, 'Mixed Veg Basket', 1, 35, 'basket', 550, 'Seasonal box of 8+ vegetables, market selection.'],
-    [5, 'Leafy Greens Pack', 1, 40, '500g', 140, 'Spinach, mustard greens and lettuce mix.'],
+    [0, 'Tomatoes', 1, 120, '1kg', 80, 'Sun ripened desi tomatoes, tangy and juicy.', 'Tomatoes.png'],
+    [0, 'Potatoes', 1, 90, '1kg', 60, 'Firm sandy-grown potatoes, perfect for sabzi and fries.', 'Potatoes.jpg'],
+    [0, 'Onions', 1, 150, '1kg', 50, 'Pungent red onions, stored crisp.', 'Onions.jpg'],
+    [0, 'Cucumbers', 1, 45, '1kg', 90, 'Cool greenhouse cucumbers, crunchy and hydrating.', 'Cucumbers.jpg'],
+    [1, 'Mangoes Sindhri', 2, 40, '1kg', 350, 'Sweet aromatic Sindhri mangoes, orchard fresh.', 'Mangoes Sindhri.png'],
+    [1, 'Oranges', 2, 75, '1kg', 160, 'Juicy kinnow oranges, seeded and sweet.', 'Oranges.jpg'],
+    [1, 'Bananas', 2, 120, '1kg', 100, 'Ripe but firm bananas, bunch fresh.', 'Bananas.jpg'],
+    [1, 'Strawberries', 2, 30, '250g', 320, 'Plump red strawberries, farm selected.', 'Strawberries.png'],
+    [2, 'Fresh Milk', 3, 60, '1L', 180, 'Raw desi milk, boiled and bottled every morning.', 'Fresh Milk.jpg'],
+    [2, 'Desi Butter', 3, 25, '500g', 700, 'Hand churned desi butter from pure cream.', 'Desi Butter.png'],
+    [2, 'Desi Yogurt', 3, 40, '500g', 160, 'Thick, tangy desi dahi made from whole milk.', 'Desi Yogurt.webp'],
+    [2, 'Cream Malai', 3, 20, '250g', 240, 'Clotted cream collected from fresh milk.', 'Cream Malai.png'],
+    [3, 'Whole Wheat Bread', 4, 35, '1 loaf', 150, 'Wood fired whole wheat loaf, baked at dawn.', 'Whole Wheat Bread.png'],
+    [3, 'Sourdough Bread', 4, 25, '1 loaf', 260, 'Naturally leavened sourdough, crusty and light.', 'Sourdough Bread.png'],
+    [3, 'Roti (12 pc)', 4, 30, 'pack', 120, 'Hand rolled chapati, soft and ready to warm.', 'Roti (12 pc).jpg'],
+    [4, 'Fresh Mint', 5, 30, '100g', 60, 'Fragrant mint sprigs grown hydroponically.', 'Fresh Mint.jpg'],
+    [4, 'Coriander', 5, 30, '100g', 40, 'Tender coriander with deep green leaves.', 'Coriander.png'],
+    [4, 'Basil', 5, 20, '50g', 110, 'Sweet basil ideal for sauces and salads.', 'Basil.jpg'],
+    [5, 'Mixed Veg Basket', 1, 35, 'basket', 550, 'Seasonal box of 8+ vegetables, market selection.', 'Mixed Veg Basket.png'],
+    [5, 'Leafy Greens Pack', 1, 40, '500g', 140, 'Spinach, mustard greens and lettuce mix.', 'Leafy Greens Pack.webp'],
 ];
 $pid = [];
 $addedProducts = 0;
 foreach ($products as $pr) {
     $fid = $farmerIds[$pr[0]];
     $ex = selectData($pdo, "SELECT product_id FROM products WHERE farmer_id = ? AND name = ?", [$fid, $pr[1]]);
+    $img = ($pr[7] ?? null) && is_file($uploadDir . $pr[7]) ? $pr[7] : null;
+    if ($img === null) {
+        $msg .= 'WARN: image missing on disk for ' . $pr[1] . ' (' . ($pr[7] ?? 'none') . ')<br>';
+    }
     if (!empty($ex)) {
         $pid[] = (int)$ex[0]['product_id'];
-        $pdo->prepare("UPDATE products SET description = ?, price = ?, unit = ?, stock_quantity = ?, image_url = NULL WHERE product_id = ?")
-            ->execute([$pr[6], $pr[3], $pr[4], $pr[5], $ex[0]['product_id']]);
+        // Existing image_url is preserved: COALESCE only fills it when the
+        // column is empty, so a re-seed never strips an uploaded file.
+        $pdo->prepare("UPDATE products SET description = ?, price = ?, unit = ?, stock_quantity = ?, image_url = COALESCE(image_url, ?) WHERE product_id = ?")
+            ->execute([$pr[6], $pr[3], $pr[4], $pr[5], $img, $ex[0]['product_id']]);
         continue;
     }
     insertData($pdo, 'products', [
         'farmer_id' => $fid, 'category_id' => $pr[2],
         'name' => $pr[1], 'description' => $pr[6], 'price' => $pr[3],
         'unit' => $pr[4], 'stock_quantity' => $pr[5],
-        'image_url' => null, 'is_available' => 1, 'is_sold_out' => 0, 'avg_rating' => 0,
+        'image_url' => $img, 'is_available' => 1, 'is_sold_out' => 0, 'avg_rating' => 0,
     ]);
     $pid[] = (int)$pdo->lastInsertId();
     $addedProducts++;

@@ -20,6 +20,7 @@
                  srcset="<?php echo ML_asset('Uploads/img/logo-nav@2x.png'); ?> 2x"
                  alt="MarketLink" width="57" height="38" loading="lazy" decoding="async">
           </span>
+        </div>
         <p class="ml-footer-text">
           Direct digital bridge connecting verified local growers and conscious customers. Pre-order honest farm harvests, pick them up fresh at community market stalls.
         </p>

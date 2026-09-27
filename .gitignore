@@ -1,0 +1,97 @@
+# ============================================================
+# MarketLink — .gitignore
+# PHP / XAMPP project, no build step. Everything under public/ is
+# served directly by Apache, so there is no "dist" folder to ignore.
+# ============================================================
+
+# ----------------------------------------------------------
+# SECRETS — never commit these
+# ----------------------------------------------------------
+# Gmail app password + seeded admin login live in this file. It is
+# required for forgot-password mail, signup seeding and the admin
+# panel, so it is ignored and must be created locally instead.
+private/emailCredentials/credentials.php
+
+# Database DSN and password. Same reason: this file is what the app
+# reads at boot, so it is ignored rather than duplicated.
+private/config/dbconnect.php
+
+# Any future .env / secret drops
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+id_rsa*
+
+# ----------------------------------------------------------
+# DATABASE DUMPS
+# ----------------------------------------------------------
+# Checked-in schema + seed data. If you start committing data
+# snapshots, delete the lines below.
+# *.sql
+
+# ----------------------------------------------------------
+# DEPENDENCIES
+# ----------------------------------------------------------
+# PHPMailer is vendored in-tree with its own composer.json, so it
+# is tracked on purpose. Ignore only Composer/npm artefacts.
+vendor/
+node_modules/
+composer.phar
+
+# ----------------------------------------------------------
+# UPLOADS
+# ----------------------------------------------------------
+# The script-side uploads folder is a staging copy. public/Uploads
+# is tracked: it holds the storefront imagery (logo, farmers
+# slides, product photos) that the design depends on.
+private/backend-scripting/uploads/
+
+# ----------------------------------------------------------
+# LOGS, CACHE, TEMP
+# ----------------------------------------------------------
+*.log
+logs/
+*.tmp
+*.temp
+*.swp
+*~
+.cache/
+.php-cs-fixer.cache
+.phpunit.result.cache
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# ----------------------------------------------------------
+# IDE / EDITOR
+# ----------------------------------------------------------
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.swp
+
+# ----------------------------------------------------------
+# OS JUNK
+# ----------------------------------------------------------
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+desktop.ini
+
+# ----------------------------------------------------------
+# LARGE MEDIA — tracked, but listed here for awareness
+# ----------------------------------------------------------
+# public/Uploads/home-page-section.mp4  (10.8 MB)
+# public/Uploads/farmer.mp4              (7.8 MB)
+# These are intentional site assets. If the repo gets slow, move
+# them to object storage and delete the lines above.

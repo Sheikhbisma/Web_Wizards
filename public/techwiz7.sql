@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 28, 2026 at 12:36 AM
+-- Generation Time: Sep 28, 2026 at 12:44 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -97,7 +97,7 @@ CREATE TABLE `customers` (
 --
 
 INSERT INTO `customers` (`customer_id`, `user_id`, `full_name`, `preferred_market_id`, `loyalty_points`, `address`, `city`, `profile_image`) VALUES
-(1, 25, 'Daniyal Ahmed', 2, 124, 'House 4, Street 9, DHA Phase 5, Karachi', 'Karachi', NULL);
+(2, 33, 'Daniyal Ahmed', 7, 124, 'House 4, Street 9, DHA Phase 5, Karachi', 'Karachi', NULL);
 
 -- --------------------------------------------------------
 
@@ -128,13 +128,12 @@ CREATE TABLE `farmers` (
 --
 
 INSERT INTO `farmers` (`farmer_id`, `user_id`, `stall_name`, `description`, `profile_image`, `address`, `latitude`, `longitude`, `approval_status`, `avg_rating`, `total_orders`, `contact_person`, `pickup_start`, `pickup_end`, `cutoff_time`) VALUES
-(1, 18, 'ali', 'hi', 'farmer_6ab460e42cee20.55249722.png', 'hey', 56.90000000, 98.09000000, 'approved', 0.00, 0, 'Bilal', NULL, NULL, NULL),
-(2, 19, 'Ayesha Farms', 'Ayesha Farms produce organic vegetables grown in Tando Adam, harvested before sunrise and at your gate by noon.', NULL, 'Plot 8, Farm Colony Tando Adam', 25.76310000, 68.66130000, 'approved', 5.00, 1, 'Ali Raza', NULL, NULL, NULL),
-(3, 20, 'Nida Orchard', 'Family-run mango and citrus orchard. Seasonal fruits only, picked ripe and packed the same morning.', NULL, 'Orchard Road, Mirpurkhas', 25.52600000, 69.01150000, 'approved', 0.00, 1, 'Nida Bano', NULL, NULL, NULL),
-(4, 21, 'GreenGate Dairy', 'Pure desi dairy — raw milk, fresh butter and clotted cream collected every single morning.', NULL, 'Green Gate Lane, Latifabad, Hyderabad', 25.39200000, 68.37200000, 'approved', 0.00, 1, 'Usman Khan', NULL, NULL, NULL),
-(5, 22, 'Sunrise Bakery', 'Wood-fired whole-wheat bread, sourdough and flatbread baked daily at dawn.', NULL, 'Shop 21, Shahrah-e-Quaideen, Saddar', 24.86110000, 67.00990000, 'approved', 4.00, 1, 'Farhan Sheikh', NULL, NULL, NULL),
-(6, 23, 'Herb Haven', 'Hydroponic herbs and microgreens grown in Karachi — basil, mint, coriander and greens year round.', NULL, 'Zone C, Scheme 33, Karachi', 24.98330000, 67.08200000, 'approved', 0.00, 1, 'Sana Abbasi', NULL, NULL, NULL),
-(7, 24, 'Farm2Basket', 'A collective of small holder farmers delivering mixed seasonal baskets of fruit and vegetables.', NULL, 'Main PAF Road, Malir, Karachi', 24.91010000, 67.20300000, 'approved', 0.00, 1, 'Imran Shah', NULL, NULL, NULL);
+(8, 27, 'Ayesha Farms', 'Ayesha Farms produce organic vegetables grown in Tando Adam, harvested before sunrise and at your gate by noon.', 'farmers-profile1.jpg', 'Plot 8, Farm Colony Tando Adam', 25.76310000, 68.66130000, 'approved', 5.00, 1, 'Ali Raza', NULL, NULL, NULL),
+(9, 28, 'Nida Orchard', 'Family-run mango and citrus orchard. Seasonal fruits only, picked ripe and packed the same morning.', 'farmers-profile2.jpg', 'Orchard Road, Mirpurkhas', 25.52600000, 69.01150000, 'approved', 0.00, 1, 'Nida Bano', NULL, NULL, NULL),
+(10, 29, 'GreenGate Dairy', 'Pure desi dairy — raw milk, fresh butter and clotted cream collected every single morning.', 'farmers-profile3.jpg', 'Green Gate Lane, Latifabad, Hyderabad', 25.39200000, 68.37200000, 'approved', 0.00, 1, 'Usman Khan', NULL, NULL, NULL),
+(11, 30, 'Sunrise Bakery', 'Wood-fired whole-wheat bread, sourdough and flatbread baked daily at dawn.', 'farmers-profile4.jpg', 'Shop 21, Shahrah-e-Quaideen, Saddar', 24.86110000, 67.00990000, 'approved', 4.00, 1, 'Farhan Sheikh', NULL, NULL, NULL),
+(12, 31, 'Herb Haven', 'Hydroponic herbs and microgreens grown in Karachi — basil, mint, coriander and greens year round.', 'farmers-profile5.jpg', 'Zone C, Scheme 33, Karachi', 24.98330000, 67.08200000, 'approved', 0.00, 1, 'Sana Abbasi', NULL, NULL, NULL),
+(13, 32, 'Farm2Basket', 'A collective of small holder farmers delivering mixed seasonal baskets of fruit and vegetables.', 'farmers-profile6.jpg', 'Main PAF Road, Malir, Karachi', 24.91010000, 67.20300000, 'approved', 0.00, 1, 'Imran Shah', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -156,11 +155,11 @@ CREATE TABLE `favorites` (
 --
 
 INSERT INTO `favorites` (`favorite_id`, `customer_id`, `farmer_id`, `product_id`, `market_id`, `created_at`) VALUES
-(1, 1, 2, NULL, NULL, '2026-09-28 03:21:09'),
-(2, 1, 4, NULL, NULL, '2026-09-28 03:21:09'),
-(3, 1, NULL, 6, NULL, '2026-09-28 03:21:09'),
-(4, 1, NULL, 2, NULL, '2026-09-28 03:21:09'),
-(5, 1, NULL, 18, NULL, '2026-09-28 03:21:09');
+(6, 2, 8, NULL, NULL, '2026-09-28 15:41:54'),
+(7, 2, 10, NULL, NULL, '2026-09-28 15:41:54'),
+(8, 2, NULL, 26, NULL, '2026-09-28 15:41:54'),
+(9, 2, NULL, 22, NULL, '2026-09-28 15:41:54'),
+(10, 2, NULL, 38, NULL, '2026-09-28 15:41:54');
 
 -- --------------------------------------------------------
 
@@ -186,12 +185,11 @@ CREATE TABLE `markets` (
 --
 
 INSERT INTO `markets` (`market_id`, `market_name`, `address`, `latitude`, `longitude`, `operating_days`, `opening_time`, `closing_time`, `map_provider`, `is_active`) VALUES
-(1, 'sihlm', 'hbkm,', 24.85307600, 66.99342700, 'Tuesday,Wednesday,Saturday', '19:17:00', '19:19:00', 'Google Maps', 1),
-(2, 'Clifton Fresh Market', 'Plot 12, MCB Road, Clifton, Karachi', 24.81000000, 67.03000000, 'Tuesday,Thursday,Saturday', '07:00:00', '14:00:00', 'OpenStreetMap', 1),
-(3, 'Gulshan Community Market', 'University Road, Gulshan-e-Iqbal, Karachi', 24.93300000, 67.07500000, 'Monday,Wednesday,Friday', '06:30:00', '13:30:00', 'OpenStreetMap', 1),
-(4, 'Saddar Juma Bazaar', 'Zaibunnisa Street, Saddar, Karachi', 24.85400000, 67.03500000, 'Friday', '05:30:00', '12:00:00', 'OpenStreetMap', 1),
-(5, 'North Nazimabad Green Market', 'Block H, North Nazimabad, Karachi', 24.95600000, 67.03300000, 'Tuesday,Friday,Sunday', '07:00:00', '15:00:00', 'OpenStreetMap', 1),
-(6, 'Malir City Farm Market', 'Main Malir Halt Road, Karachi', 24.89700000, 67.19200000, 'Wednesday,Saturday', '06:00:00', '13:00:00', 'OpenStreetMap', 1);
+(7, 'Clifton Fresh Market', 'Plot 12, MCB Road, Clifton, Karachi', 24.81000000, 67.03000000, 'Tuesday,Thursday,Saturday', '07:00:00', '14:00:00', 'OpenStreetMap', 1),
+(8, 'Gulshan Community Market', 'University Road, Gulshan-e-Iqbal, Karachi', 24.93300000, 67.07500000, 'Monday,Wednesday,Friday', '06:30:00', '13:30:00', 'OpenStreetMap', 1),
+(9, 'Saddar Juma Bazaar', 'Zaibunnisa Street, Saddar, Karachi', 24.85400000, 67.03500000, 'Friday', '05:30:00', '12:00:00', 'OpenStreetMap', 1),
+(10, 'North Nazimabad Green Market', 'Block H, North Nazimabad, Karachi', 24.95600000, 67.03300000, 'Tuesday,Friday,Sunday', '07:00:00', '15:00:00', 'OpenStreetMap', 1),
+(11, 'Malir City Farm Market', 'Main Malir Halt Road, Karachi', 24.89700000, 67.19200000, 'Wednesday,Saturday', '06:00:00', '13:00:00', 'OpenStreetMap', 1);
 
 -- --------------------------------------------------------
 
@@ -214,22 +212,21 @@ CREATE TABLE `market_farmer` (
 --
 
 INSERT INTO `market_farmer` (`mf_id`, `market_id`, `farmer_id`, `stall_number`, `pickup_start`, `pickup_end`, `day_of_week`) VALUES
-(5, 1, 1, 'stall#12', '06:48:00', '20:48:00', 'Tuesday'),
-(6, 2, 2, 'A-01', '07:00:00', '13:30:00', 'Tuesday'),
-(7, 2, 3, 'A-02', '07:00:00', '13:00:00', 'Tuesday'),
-(8, 2, 6, 'C-05', '07:00:00', '13:30:00', 'Thursday'),
-(9, 2, 7, 'B-12', '07:00:00', '13:00:00', 'Saturday'),
-(10, 3, 3, 'D-03', '06:30:00', '12:30:00', 'Wednesday'),
-(11, 3, 4, 'D-04', '06:30:00', '12:30:00', 'Wednesday'),
-(12, 3, 6, 'E-09', '06:30:00', '12:30:00', 'Monday'),
-(13, 4, 5, 'F-01', '05:30:00', '11:00:00', 'Friday'),
-(14, 4, 2, 'F-02', '05:30:00', '11:00:00', 'Friday'),
-(15, 5, 4, 'G-07', '07:00:00', '14:00:00', 'Sunday'),
-(16, 5, 5, 'G-08', '07:00:00', '14:00:00', 'Sunday'),
-(17, 5, 7, 'H-02', '07:00:00', '13:30:00', 'Tuesday'),
-(18, 6, 2, 'J-01', '06:00:00', '12:00:00', 'Wednesday'),
-(19, 6, 3, 'J-02', '06:00:00', '12:00:00', 'Wednesday'),
-(20, 6, 6, 'K-05', '06:00:00', '12:00:00', 'Saturday');
+(21, 7, 8, 'A-01', '07:00:00', '13:30:00', 'Tuesday'),
+(22, 7, 9, 'A-02', '07:00:00', '13:00:00', 'Tuesday'),
+(23, 7, 12, 'C-05', '07:00:00', '13:30:00', 'Thursday'),
+(24, 7, 13, 'B-12', '07:00:00', '13:00:00', 'Saturday'),
+(25, 8, 9, 'D-03', '06:30:00', '12:30:00', 'Wednesday'),
+(26, 8, 10, 'D-04', '06:30:00', '12:30:00', 'Wednesday'),
+(27, 8, 12, 'E-09', '06:30:00', '12:30:00', 'Monday'),
+(28, 9, 11, 'F-01', '05:30:00', '11:00:00', 'Friday'),
+(29, 9, 8, 'F-02', '05:30:00', '11:00:00', 'Friday'),
+(30, 10, 10, 'G-07', '07:00:00', '14:00:00', 'Sunday'),
+(31, 10, 11, 'G-08', '07:00:00', '14:00:00', 'Sunday'),
+(32, 10, 13, 'H-02', '07:00:00', '13:30:00', 'Tuesday'),
+(33, 11, 8, 'J-01', '06:00:00', '12:00:00', 'Wednesday'),
+(34, 11, 9, 'J-02', '06:00:00', '12:00:00', 'Wednesday'),
+(35, 11, 12, 'K-05', '06:00:00', '12:00:00', 'Saturday');
 
 -- --------------------------------------------------------
 
@@ -252,11 +249,11 @@ CREATE TABLE `notifications` (
 --
 
 INSERT INTO `notifications` (`notification_id`, `user_id`, `title`, `message`, `type`, `is_read`, `created_at`) VALUES
-(1, 25, 'Order Ready', 'Your milk order #3 is ready for pickup today at Gulshan Community Market.', 'order', 0, '2026-09-27 18:21:09'),
-(2, 25, 'Order Accepted', 'Farmer Nida Orchard accepted your order #4.', 'order', 0, '2026-09-27 22:21:09'),
-(3, 25, 'Order Placed', 'Pre-order #5 is confirmed. Payment will be settled at pickup.', 'order', 0, '2026-09-27 20:21:09'),
-(4, 25, 'Order Cancelled', 'Pre-order #6 has been cancelled. See you soon!', 'order', 0, '2026-09-27 21:21:09'),
-(5, 25, 'Welcome to MarketLink', 'Pre-order fresh produce from farmers and pick up at the market.', 'announcement', 0, '2026-09-27 23:21:09');
+(6, 33, 'Order Ready', 'Your milk order #9 is ready for pickup today at Gulshan Community Market.', 'order', 0, '2026-09-28 10:41:54'),
+(7, 33, 'Order Accepted', 'Farmer Nida Orchard accepted your order #10.', 'order', 0, '2026-09-28 10:41:54'),
+(8, 33, 'Order Placed', 'Pre-order #11 is confirmed. Payment will be settled at pickup.', 'order', 0, '2026-09-28 06:41:54'),
+(9, 33, 'Order Cancelled', 'Pre-order #12 has been cancelled. See you soon!', 'order', 0, '2026-09-28 08:41:54'),
+(10, 33, 'Welcome to MarketLink', 'Pre-order fresh produce from farmers and pick up at the market.', 'announcement', 0, '2026-09-28 06:41:54');
 
 -- --------------------------------------------------------
 
@@ -284,12 +281,12 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`order_id`, `customer_id`, `farmer_id`, `market_id`, `pickup_date`, `pickup_slot`, `total_amount`, `order_status`, `cutoff_time`, `special_instructions`, `order_date`, `updated_at`) VALUES
-(1, 1, 2, 2, '2026-10-04', '07:00 - 08:00', 390.00, 'completed', '2026-10-03 08:00:00', 'Firm green tomatoes please', '2026-09-21 00:21:09', '2026-09-28 03:21:09'),
-(2, 1, 5, 4, '2026-10-01', '05:30 - 06:30', 420.00, 'completed', '2026-09-30 06:30:00', 'Please pack bread separately', '2026-09-24 00:21:09', '2026-09-28 03:21:09'),
-(3, 1, 4, 3, '2026-09-28', '06:30 - 07:30', 860.00, 'ready', '2026-09-27 07:30:00', 'Need milk before 7am please', '2026-09-28 00:21:09', '2026-09-28 03:21:09'),
-(4, 1, 3, 2, '2026-10-01', '07:00 - 08:30', 1180.00, 'accepted', '2026-09-30 08:30:00', 'Choose ripe mangoes', '2026-09-27 00:21:09', '2026-09-28 03:21:09'),
-(5, 1, 7, 5, '2026-10-03', '07:00 - 08:00', 830.00, 'placed', '2026-10-02 08:00:00', 'Amla basket this time', '2026-09-28 00:21:09', '2026-09-28 03:21:09'),
-(6, 1, 6, 2, '2026-09-30', '07:00 - 08:00', 160.00, 'cancelled', '2026-09-29 08:00:00', '', '2026-09-25 00:21:09', '2026-09-28 03:21:09');
+(7, 2, 8, 7, '2026-10-04', '07:00 - 08:00', 390.00, 'completed', '2026-10-03 08:00:00', 'Firm green tomatoes please', '2026-09-21 12:41:54', '2026-09-28 15:41:54'),
+(8, 2, 11, 9, '2026-10-01', '05:30 - 06:30', 420.00, 'completed', '2026-09-30 06:30:00', 'Please pack bread separately', '2026-09-24 12:41:54', '2026-09-28 15:41:54'),
+(9, 2, 10, 8, '2026-09-28', '06:30 - 07:30', 860.00, 'ready', '2026-09-27 07:30:00', 'Need milk before 7am please', '2026-09-28 12:41:54', '2026-09-28 15:41:54'),
+(10, 2, 9, 7, '2026-10-01', '07:00 - 08:30', 1180.00, 'accepted', '2026-09-30 08:30:00', 'Choose ripe mangoes', '2026-09-27 12:41:54', '2026-09-28 15:41:54'),
+(11, 2, 13, 10, '2026-10-03', '07:00 - 08:00', 830.00, 'placed', '2026-10-02 08:00:00', 'Amla basket this time', '2026-09-28 12:41:54', '2026-09-28 15:41:54'),
+(12, 2, 12, 7, '2026-09-30', '07:00 - 08:00', 160.00, 'cancelled', '2026-09-29 08:00:00', '', '2026-09-25 12:41:54', '2026-09-28 15:41:54');
 
 -- --------------------------------------------------------
 
@@ -311,17 +308,17 @@ CREATE TABLE `order_items` (
 --
 
 INSERT INTO `order_items` (`order_item_id`, `order_id`, `product_id`, `quantity`, `unit_price`, `subtotal`) VALUES
-(1, 1, 2, 2, 120.00, 240.00),
-(2, 1, 4, 3, 50.00, 150.00),
-(3, 2, 14, 2, 150.00, 300.00),
-(4, 2, 16, 1, 120.00, 120.00),
-(5, 3, 10, 3, 180.00, 540.00),
-(6, 3, 12, 2, 160.00, 320.00),
-(7, 4, 6, 2, 350.00, 700.00),
-(8, 4, 7, 3, 160.00, 480.00),
-(9, 5, 20, 1, 550.00, 550.00),
-(10, 5, 21, 2, 140.00, 280.00),
-(11, 6, 18, 4, 40.00, 160.00);
+(12, 7, 22, 2, 120.00, 240.00),
+(13, 7, 24, 3, 50.00, 150.00),
+(14, 8, 34, 2, 150.00, 300.00),
+(15, 8, 36, 1, 120.00, 120.00),
+(16, 9, 30, 3, 180.00, 540.00),
+(17, 9, 32, 2, 160.00, 320.00),
+(18, 10, 26, 2, 350.00, 700.00),
+(19, 10, 27, 3, 160.00, 480.00),
+(20, 11, 40, 1, 550.00, 550.00),
+(21, 11, 41, 2, 140.00, 280.00),
+(22, 12, 38, 4, 40.00, 160.00);
 
 -- --------------------------------------------------------
 
@@ -366,27 +363,26 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`product_id`, `farmer_id`, `category_id`, `name`, `description`, `price`, `unit`, `stock_quantity`, `image_url`, `is_available`, `is_sold_out`, `avg_rating`, `created_at`, `updated_at`) VALUES
-(1, 1, 4, 'Bisma sheikh', 'hello', 300.00, '1kg', -6, 'product_6ab476050fdec4.89012979.png', 1, 0, 0.00, '2026-09-24 05:59:49', '2026-09-24 05:59:49'),
-(2, 2, 1, 'Tomatoes', 'Sun ripened desi tomatoes, tangy and juicy.', 120.00, '1kg', 80, 'Tomatoes.png', 1, 0, 5.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49'),
-(3, 2, 1, 'Potatoes', 'Firm sandy-grown potatoes, perfect for sabzi and fries.', 90.00, '1kg', 60, 'Potatoes.jpg', 1, 0, 0.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49'),
-(4, 2, 1, 'Onions', 'Pungent red onions, stored crisp.', 150.00, '1kg', 50, 'Onions.jpg', 1, 0, 0.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49'),
-(5, 2, 1, 'Cucumbers', 'Cool greenhouse cucumbers, crunchy and hydrating.', 45.00, '1kg', 90, 'Cucumbers.jpg', 1, 0, 0.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49'),
-(6, 3, 2, 'Mangoes Sindhri', 'Sweet aromatic Sindhri mangoes, orchard fresh.', 40.00, '1kg', 350, 'Mangoes Sindhri.png', 1, 0, 0.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49'),
-(7, 3, 2, 'Oranges', 'Juicy kinnow oranges, seeded and sweet.', 75.00, '1kg', 160, 'Oranges.png', 1, 0, 0.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49'),
-(8, 3, 2, 'Bananas', 'Ripe but firm bananas, bunch fresh.', 120.00, '1kg', 100, 'Bananas.jpg', 1, 0, 0.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49'),
-(9, 3, 2, 'Strawberries', 'Plump red strawberries, farm selected.', 30.00, '250g', 320, 'Strawberries.png', 1, 0, 0.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49'),
-(10, 4, 3, 'Fresh Milk', 'Raw desi milk, boiled and bottled every morning.', 60.00, '1L', 180, 'Fresh Milk.jpg', 1, 0, 0.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49'),
-(11, 4, 3, 'Desi Butter', 'Hand churned desi butter from pure cream.', 25.00, '500g', 700, 'Desi Butter.png', 1, 0, 0.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49'),
-(12, 4, 3, 'Desi Yogurt', 'Thick, tangy desi dahi made from whole milk.', 40.00, '500g', 160, 'Desi Yogurt.webp', 1, 0, 0.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49'),
-(13, 4, 3, 'Cream Malai', 'Clotted cream collected from fresh milk.', 20.00, '250g', 240, 'Cream Malai.png', 1, 0, 0.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49'),
-(14, 5, 4, 'Whole Wheat Bread', 'Wood fired whole wheat loaf, baked at dawn.', 35.00, '1 loaf', 150, 'Whole Wheat Bread.png', 1, 0, 4.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49'),
-(15, 5, 4, 'Sourdough Bread', 'Naturally leavened sourdough, crusty and light.', 25.00, '1 loaf', 260, 'Sourdough Bread.png', 1, 0, 0.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49'),
-(16, 5, 4, 'Roti (12 pc)', 'Hand rolled chapati, soft and ready to warm.', 30.00, 'pack', 120, 'Roti (12 pc).jpg', 1, 0, 0.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49'),
-(17, 6, 5, 'Fresh Mint', 'Fragrant mint sprigs grown hydroponically.', 30.00, '100g', 60, 'Fresh Mint.jpg', 1, 0, 0.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49'),
-(18, 6, 5, 'Coriander', 'Tender coriander with deep green leaves.', 30.00, '100g', 40, 'Coriander.png', 1, 0, 0.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49'),
-(19, 6, 5, 'Basil', 'Sweet basil ideal for sauces and salads.', 20.00, '50g', 110, 'Basil.jpg', 1, 0, 0.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49'),
-(20, 7, 1, 'Mixed Veg Basket', 'Seasonal box of 8+ vegetables, market selection.', 35.00, 'basket', 550, 'Mixed Veg Basket.png', 1, 0, 0.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49'),
-(21, 7, 1, 'Leafy Greens Pack', 'Spinach, mustard greens and lettuce mix.', 40.00, '500g', 140, 'Leafy Greens Pack.webp', 1, 0, 0.00, '2026-09-28 03:21:09', '2026-09-28 03:23:49');
+(22, 8, 1, 'Tomatoes', 'Sun ripened desi tomatoes, tangy and juicy.', 120.00, '1kg', 80, '../public/Uploads/img/Tomatoes.png', 1, 0, 5.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54'),
+(23, 8, 1, 'Potatoes', 'Firm sandy-grown potatoes, perfect for sabzi and fries.', 90.00, '1kg', 60, '../public/Uploads/img/Potatoes.jpg', 1, 0, 0.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54'),
+(24, 8, 1, 'Onions', 'Pungent red onions, stored crisp.', 150.00, '1kg', 50, '../public/Uploads/img/Onions.jpg', 1, 0, 0.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54'),
+(25, 8, 1, 'Cucumbers', 'Cool greenhouse cucumbers, crunchy and hydrating.', 45.00, '1kg', 90, '../public/Uploads/img/Cucumbers.jpg', 1, 0, 0.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54'),
+(26, 9, 2, 'Mangoes Sindhri', 'Sweet aromatic Sindhri mangoes, orchard fresh.', 40.00, '1kg', 350, '../public/Uploads/img/Mangoes Sindhri.png', 1, 0, 0.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54'),
+(27, 9, 2, 'Oranges', 'Juicy kinnow oranges, seeded and sweet.', 75.00, '1kg', 160, '../public/Uploads/img/Oranges.jpg', 1, 0, 0.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54'),
+(28, 9, 2, 'Bananas', 'Ripe but firm bananas, bunch fresh.', 120.00, '1kg', 100, '../public/Uploads/img/Bananas.jpg', 1, 0, 0.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54'),
+(29, 9, 2, 'Strawberries', 'Plump red strawberries, farm selected.', 30.00, '250g', 320, '../public/Uploads/img/Strawberries.png', 1, 0, 0.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54'),
+(30, 10, 3, 'Fresh Milk', 'Raw desi milk, boiled and bottled every morning.', 60.00, '1L', 180, '../public/Uploads/img/Fresh Milk.jpg', 1, 0, 0.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54'),
+(31, 10, 3, 'Desi Butter', 'Hand churned desi butter from pure cream.', 25.00, '500g', 700, '../public/Uploads/img/Desi Butter.png', 1, 0, 0.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54'),
+(32, 10, 3, 'Desi Yogurt', 'Thick, tangy desi dahi made from whole milk.', 40.00, '500g', 160, '../public/Uploads/img/Desi Yogurt.webp', 1, 0, 0.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54'),
+(33, 10, 3, 'Cream Malai', 'Clotted cream collected from fresh milk.', 20.00, '250g', 240, '../public/Uploads/img/Cream Malai.png', 1, 0, 0.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54'),
+(34, 11, 4, 'Whole Wheat Bread', 'Wood fired whole wheat loaf, baked at dawn.', 35.00, '1 loaf', 150, '../public/Uploads/img/Whole Wheat Bread.png', 1, 0, 4.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54'),
+(35, 11, 4, 'Sourdough Bread', 'Naturally leavened sourdough, crusty and light.', 25.00, '1 loaf', 260, '../public/Uploads/img/Sourdough Bread.png', 1, 0, 0.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54'),
+(36, 11, 4, 'Roti (12 pc)', 'Hand rolled chapati, soft and ready to warm.', 30.00, 'pack', 120, '../public/Uploads/img/Roti (12 pc).jpg', 1, 0, 0.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54'),
+(37, 12, 5, 'Fresh Mint', 'Fragrant mint sprigs grown hydroponically.', 30.00, '100g', 60, '../public/Uploads/img/Fresh Mint.jpg', 1, 0, 0.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54'),
+(38, 12, 5, 'Coriander', 'Tender coriander with deep green leaves.', 30.00, '100g', 40, '../public/Uploads/img/Coriander.png', 1, 0, 0.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54'),
+(39, 12, 5, 'Basil', 'Sweet basil ideal for sauces and salads.', 20.00, '50g', 110, '../public/Uploads/img/Basil.jpg', 1, 0, 0.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54'),
+(40, 13, 1, 'Mixed Veg Basket', 'Seasonal box of 8+ vegetables, market selection.', 35.00, 'basket', 550, '../public/Uploads/img/Mixed Veg Basket.png', 1, 0, 0.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54'),
+(41, 13, 1, 'Leafy Greens Pack', 'Spinach, mustard greens and lettuce mix.', 40.00, '500g', 140, '../public/Uploads/img/Leafy Greens Pack.webp', 1, 0, 0.00, '2026-09-28 15:41:54', '2026-09-28 15:41:54');
 
 -- --------------------------------------------------------
 
@@ -427,8 +423,8 @@ CREATE TABLE `reviews` (
 --
 
 INSERT INTO `reviews` (`review_id`, `order_id`, `product_id`, `farmer_id`, `customer_id`, `rating`, `comment`, `farmer_response`, `review_date`, `is_flagged`) VALUES
-(1, 1, 2, 2, 1, 5, 'Best tomatoes I have found in Karachi. Super fresh.', 'Shukriya Daniyal! See you next week.', '2026-09-23 00:21:09', 0),
-(2, 2, 14, 5, 1, 4, 'Bread is excellent, still warm at pickup.', NULL, '2026-09-26 00:21:09', 0);
+(3, 7, 22, 8, 2, 5, 'Best tomatoes I have found in Karachi. Super fresh.', 'Shukriya Daniyal! See you next week.', '2026-09-23 12:41:54', 0),
+(4, 8, 34, 11, 2, 4, 'Bread is excellent, still warm at pickup.', NULL, '2026-09-26 12:41:54', 0);
 
 -- --------------------------------------------------------
 
@@ -460,14 +456,14 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `username`, `email`, `contact`, `password`, `otp_code`, `otp_expiry`, `reset_token`, `reset_token_expiry`, `is_verified`, `created_at`, `role`, `status`, `remember_token`) VALUES
 (16, 'Bisma Sheikh', 'bismasheikh2006@gmail.com', '03212038938', '$2y$10$OIvaRsa69Ps3JF.1/TZPi.iLVMy9EsqX1CPlfnBISok4r3LlpJI1W', '830912', NULL, NULL, NULL, 1, '2026-09-23 03:54:29', 'customer', 'deactivated', NULL),
 (17, 'admin', 'admin@gmail.com', NULL, '$2y$10$x41.dYoDFQiOzk3.9TpA.OXa1D1Yf2Vw1juaPYVumPi.sGag9GXfq', '123456', NULL, NULL, NULL, 1, '2026-09-23 13:29:08', 'admin', 'active', NULL),
-(18, 'Bilal', 'bilal@gmail.com', '03212038938', '$2y$10$snvBmK4WiV9f.bWTKjGS3.3Hiz7KhzCNKn6voOo8wa5Akci0w0FAu', '987654', NULL, NULL, NULL, 1, '2026-09-23 20:38:21', 'farmer', 'active', NULL),
-(19, 'AliRaza', 'ali.raza@gmail.com', '03331234567', '$2y$10$oeR5w2uC/JayscJfiJNKOukEEPuWZqG3iN0dYtooKjOa55CzGzFuO', '111111', NULL, NULL, NULL, 1, '2026-09-27 22:21:08', 'farmer', 'active', NULL),
-(20, 'Nida', 'nida.orchard@gmail.com', '03451234567', '$2y$10$pmtKQBtz/r8Iw5NGIZoUwew7.f07gl2wGKnaAj69oIJlvuL6696.a', '111111', NULL, NULL, NULL, 1, '2026-09-27 22:21:08', 'farmer', 'active', NULL),
-(21, 'GreenGate', 'greengate.dairy@gmail.com', '03211234567', '$2y$10$zev9opgJ4/.w6LqkyEv1i.WpjKAJ3qrQni/Pu8Kp5koeKLWYVCVRe', '111111', NULL, NULL, NULL, 1, '2026-09-27 22:21:08', 'farmer', 'active', NULL),
-(22, 'SunriseBakery', 'sunrise.bake@gmail.com', '03001234567', '$2y$10$pxhjRIr0qyS7jkjwxIzf8.1vBaSr2J3wek8vKCQQh1alkRl5XS05i', '111111', NULL, NULL, NULL, 1, '2026-09-27 22:21:09', 'farmer', 'active', NULL),
-(23, 'HerbHaven', 'herbhaven.pk@gmail.com', '03151234567', '$2y$10$BfiK39qtAtRZAW0XZ2oJA.NiMlQO6LAWwLAs.R2QUMSukKQDwT4vu', '111111', NULL, NULL, NULL, 1, '2026-09-27 22:21:09', 'farmer', 'active', NULL),
-(24, 'Farm2Basket', 'farm2basket@gmail.com', '03161234567', '$2y$10$0M1KSFSIGuVZgoLmV1tFHucoO3fFG4H0xC9XFODHs0vwZ0xfxt8Xq', '111111', NULL, NULL, NULL, 1, '2026-09-27 22:21:09', 'farmer', 'active', NULL),
-(25, 'Daniyal', 'daniyal@gmail.com', '03331231234', '$2y$10$BBArJWXspqhEw1t/.iJ.0Oe2bEtPUGxeuebVnp6.jPi5R3SyFkv6.', '555555', NULL, NULL, NULL, 1, '2026-09-27 22:21:09', 'customer', 'active', NULL);
+(26, 'Bilal', 'bilal@gmail.com', NULL, '$2y$10$V.Vf6OyxHtqIPbRLzlzGUe0ayjOYjE60AE.YjqeVWujt4RJt8Jh.G', '987654', NULL, NULL, NULL, 1, '2026-09-28 10:41:53', 'farmer', 'active', NULL),
+(27, 'AliRaza', 'ali.raza@gmail.com', '03331234567', '$2y$10$X2ovODTI8mJej90g7kpG4uPtJjraJlWD94xCxW40N5b1qlvm.xwFi', '111111', NULL, NULL, NULL, 1, '2026-09-28 10:41:53', 'farmer', 'active', NULL),
+(28, 'Nida', 'nida.orchard@gmail.com', '03451234567', '$2y$10$ru0HLCqGCDxgGOZWsJnzquH13bcrSwWxMf4aNhQkAR.0GVZXluQwq', '111111', NULL, NULL, NULL, 1, '2026-09-28 10:41:53', 'farmer', 'active', NULL),
+(29, 'GreenGate', 'greengate.dairy@gmail.com', '03211234567', '$2y$10$AE4fJiK5y3bK2jJ/zmz1MeM8CiMIDbZoyjjyE8k1UC8MnMMgGp03q', '111111', NULL, NULL, NULL, 1, '2026-09-28 10:41:53', 'farmer', 'active', NULL),
+(30, 'SunriseBakery', 'sunrise.bake@gmail.com', '03001234567', '$2y$10$u2Q9aTBQ2G4fD3U/l43Fn.wltkuY9DViHg/bULOhGLedKsLGabwxq', '111111', NULL, NULL, NULL, 1, '2026-09-28 10:41:54', 'farmer', 'active', NULL),
+(31, 'HerbHaven', 'herbhaven.pk@gmail.com', '03151234567', '$2y$10$GKkHl1rsv2yJp0L1DwopDuRxRUeWr8RK8OGeqy6DjmmJM5oLpgyNa', '111111', NULL, NULL, NULL, 1, '2026-09-28 10:41:54', 'farmer', 'active', NULL),
+(32, 'Farm2Basket', 'farm2basket@gmail.com', '03161234567', '$2y$10$gqvtiGYMZsWM1Na/O0ggGO4OEeagxCYUQmaQRyuhe2IDOoRzzO4fu', '111111', NULL, NULL, NULL, 1, '2026-09-28 10:41:54', 'farmer', 'active', NULL),
+(33, 'Daniyal', 'daniyal@gmail.com', '03331231234', '$2y$10$xnJShOFUtsgEx8gLPC8kreqMHb4u7HYBGvj5CMhGYm9hwso4oLbUe', '555555', NULL, NULL, NULL, 1, '2026-09-28 10:41:54', 'customer', 'active', NULL);
 
 -- --------------------------------------------------------
 
@@ -643,49 +639,49 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `farmers`
 --
 ALTER TABLE `farmers`
-  MODIFY `farmer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `farmer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `favorites`
 --
 ALTER TABLE `favorites`
-  MODIFY `favorite_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `favorite_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `markets`
 --
 ALTER TABLE `markets`
-  MODIFY `market_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `market_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `market_farmer`
 --
 ALTER TABLE `market_farmer`
-  MODIFY `mf_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `mf_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `pickup_slots`
@@ -697,7 +693,7 @@ ALTER TABLE `pickup_slots`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `reports`
@@ -709,13 +705,13 @@ ALTER TABLE `reports`
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `weekly_stock_template`

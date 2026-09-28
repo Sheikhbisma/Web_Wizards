@@ -59,12 +59,17 @@ foreach ($markets as $m) {
 $msg .= 'Markets: ' . count($marketIds) . ' (' . $newMarkets . ' new)<br>';
 
 $farmers = [
-    ['AliRaza', 'ali.raza@gmail.com', '03331234567', 'Ayesha Farms', 'Ayesha Farms produce organic vegetables grown in Tando Adam, harvested before sunrise and at your gate by noon.', 'Plot 8, Farm Colony Tando Adam', 25.76310000, 68.66130000, 'Ali Raza'],
-    ['Nida', 'nida.orchard@gmail.com', '03451234567', 'Nida Orchard', 'Family-run mango and citrus orchard. Seasonal fruits only, picked ripe and packed the same morning.', 'Orchard Road, Mirpurkhas', 25.52600000, 69.01150000, 'Nida Bano'],
-    ['GreenGate', 'greengate.dairy@gmail.com', '03211234567', 'GreenGate Dairy', 'Pure desi dairy — raw milk, fresh butter and clotted cream collected every single morning.', 'Green Gate Lane, Latifabad, Hyderabad', 25.39200000, 68.37200000, 'Usman Khan'],
-    ['SunriseBakery', 'sunrise.bake@gmail.com', '03001234567', 'Sunrise Bakery', 'Wood-fired whole-wheat bread, sourdough and flatbread baked daily at dawn.', 'Shop 21, Shahrah-e-Quaideen, Saddar', 24.86110000, 67.00990000, 'Farhan Sheikh'],
-    ['HerbHaven', 'herbhaven.pk@gmail.com', '03151234567', 'Herb Haven', 'Hydroponic herbs and microgreens grown in Karachi — basil, mint, coriander and greens year round.', 'Zone C, Scheme 33, Karachi', 24.98330000, 67.08200000, 'Sana Abbasi'],
-    ['Farm2Basket', 'farm2basket@gmail.com', '03161234567', 'Farm2Basket', 'A collective of small holder farmers delivering mixed seasonal baskets of fruit and vegetables.', 'Main PAF Road, Malir, Karachi', 24.91010000, 67.20300000, 'Imran Shah'],
+    ['AliRaza', 'ali.raza@gmail.com', '03331234567', 'Ayesha Farms', 'Ayesha Farms produce organic vegetables grown in Tando Adam, harvested before sunrise and at your gate by noon.', 'Plot 8, Farm Colony Tando Adam', 25.76310000, 68.66130000, 'Ali Raza', 'farmers-profile1.jpg'],
+    ['Nida', 'nida.orchard@gmail.com', '03451234567', 'Nida Orchard', 'Family-run mango and citrus orchard. Seasonal fruits only, picked ripe and packed the same morning.', 'Orchard Road, Mirpurkhas', 25.52600000, 69.01150000, 'Nida Bano', 'farmers-profile2.jpg'],
+    ['GreenGate', 'greengate.dairy@gmail.com', '03211234567', 'GreenGate Dairy', 'Pure desi dairy — raw milk, fresh butter and clotted cream collected every single morning.', 'Green Gate Lane, Latifabad, Hyderabad', 25.39200000, 68.37200000, 'Usman Khan', 'farmers-profile3.jpg'],
+    ['SunriseBakery', 'sunrise.bake@gmail.com', '03001234567', 'Sunrise Bakery', 'Wood-fired whole-wheat bread, sourdough and flatbread baked daily at dawn.', 'Shop 21, Shahrah-e-Quaideen, Saddar', 24.86110000, 67.00990000, 'Farhan Sheikh', 'farmers-profile4.jpg'],
+    ['HerbHaven', 'herbhaven.pk@gmail.com', '03151234567', 'Herb Haven', 'Hydroponic herbs and microgreens grown in Karachi — basil, mint, coriander and greens year round.', 'Zone C, Scheme 33, Karachi', 24.98330000, 67.08200000, 'Sana Abbasi', 'farmers-profile5.jpg'],
+    ['Farm2Basket', 'farm2basket@gmail.com', '03161234567', 'Farm2Basket', 'A collective of small holder farmers delivering mixed seasonal baskets of fruit and vegetables.', 'Main PAF Road, Malir, Karachi', 24.91010000, 67.20300000, 'Imran Shah', 'farmers-profile6.jpg'],
+];
+
+$farmerImgDirs = [
+    __DIR__ . '/../../public/Uploads/img/',
+    __DIR__ . '/../../public/Uploads/',
 ];
 
 $farmerIds = [];
@@ -94,7 +99,26 @@ foreach ($farmers as $f) {
         'approval_status' => 'approved', 'avg_rating' => 0,
         'total_orders' => 0, 'contact_person' => $f[8],
     ]);
-    $farmerIds[] = (int)$pdo->lastInsertId();
+    $newFarmerId = (int)$pdo->lastInsertId();
+    // Optional per-farmer image name ($f[9]). Stored bare like save-profile.php
+    // writes it; the render side (farmerImgSrc / cards) resolves to public/Uploads/.
+    if (!empty($f[9])) {
+        $pImgName = basename((string)$f[9]);
+        $imgFound = '';
+        foreach ($farmerImgDirs as $fDir) {
+            if (is_file($fDir . $pImgName)) {
+                $imgFound = (string)$fDir;
+                break;
+            }
+        }
+        if ($imgFound !== '') {
+            $pdo->prepare("UPDATE farmers SET profile_image = ? WHERE farmer_id = ?")
+                ->execute([$pImgName, $newFarmerId]);
+        } else {
+            $msg .= 'WARN: farmer image missing on disk for ' . $f[3] . ' (' . $f[9] . ')<br>';
+        }
+    }
+    $farmerIds[] = $newFarmerId;
     $addedFarmers++;
 }
 $msg .= 'Farmers: ' . count($farmerIds) . ' (' . $addedFarmers . ' new)<br>';
@@ -130,9 +154,10 @@ foreach ($links as $l) {
 $msg .= 'Market links: ' . count($links) . ' (' . $addedLinks . ' new)<br>';
 
 // Layout: [farmerIdx, name, categoryId, price, unit, stock, description, imageFile]
-// The image is a bare filename resolved against public/Uploads/img/ by
-// prodImgSrc(). Keep it in sync with the files actually on disk, otherwise the
-// product falls back to a category icon tile.
+// The image is stored as the SAME relative path the site renders. All upload
+// handlers (save-product.php, save-profile.php) land files in public/Uploads/,
+// so seed values carry that exact prefix and prodImgSrc() echoes them back
+// verbatim once a file exists on disk under the matched public folder.
 $uploadDir = __DIR__ . '/../../public/Uploads/img/';
 $products = [
     [0, 'Tomatoes', 1, 120, '1kg', 80, 'Sun ripened desi tomatoes, tangy and juicy.', 'Tomatoes.png'],
@@ -161,7 +186,8 @@ $addedProducts = 0;
 foreach ($products as $pr) {
     $fid = $farmerIds[$pr[0]];
     $ex = selectData($pdo, "SELECT product_id FROM products WHERE farmer_id = ? AND name = ?", [$fid, $pr[1]]);
-    $img = ($pr[7] ?? null) && is_file($uploadDir . $pr[7]) ? $pr[7] : null;
+    $dbImage = basename((string)($pr[7] ?? ''));
+    $img = ($dbImage !== '' && is_file($uploadDir . $dbImage)) ? '../public/Uploads/img/' . $dbImage : null;
     if ($img === null) {
         $msg .= 'WARN: image missing on disk for ' . $pr[1] . ' (' . ($pr[7] ?? 'none') . ')<br>';
     }

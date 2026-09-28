@@ -2,6 +2,7 @@
 session_start();
 require_once "../config/dbconnect.php";
 require_once "../config/functions.php";
+require_once "../config/customer.php";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
     $otp = random_int(100000, 999999);
@@ -21,22 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         set_flash("error", "Password and confirm password do not match");
         redirect("signup");
     }
-    if (empty($_POST['terms'])) {
-        $_SESSION['old_input'] = $_POST;
-        $_SESSION['signupactive'] = true;
-        set_flash("error", "Please accept the terms and conditions");
-        redirect("signup");
-    }
 
-    if ($role == "customer") {
-        $address = trim($_POST['address'] ?? '');
-        if ($address == "") {
-            $_SESSION['old_input'] = $_POST;
-            $_SESSION['signupactive'] = true;
-            set_flash("error", "Please provide your delivery area / address");
-            redirect("signup");
-        }
-    }
     if ($role == "farmer") {
         $stallName = trim($_POST['stall_name'] ?? '');
         $contactPerson = trim($_POST['contact_person'] ?? '');
@@ -90,8 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($newUser)) {
                 insertData($pdo, "customers", [
                     "user_id" => $newUser[0]['id'],
-                    "full_name" => $name,
-                    "address" => $address
+                    "full_name" => $name
                 ]);
                 addNotif($pdo, $newUser[0]['id'], 'Welcome to MarketLink', 'Your account is created. Verify your email to start pre-ordering fresh produce.', 'announcement');
             }

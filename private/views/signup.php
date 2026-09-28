@@ -499,6 +499,19 @@ $old = $_SESSION['old_input'] ?? [];
                                 <div class="text-danger d-none small mt-1" id="passerr">Please satisfy password requirements</div>
                             </div>
 
+                            <!-- Confirm Password -->
+                            <div class="ml-field-group">
+                                <label class="ml-field-label">Confirm Password</label>
+                                <div class="ml-input-wrap">
+                                    <i class="fa-solid fa-lock ml-input-icon"></i>
+                                    <input type="password" id="confirmPassword" name="confirm_password" class="ml-input-field" placeholder="Re-enter your password" required autocomplete="new-password">
+                                    <span class="ml-pass-toggle" onclick="togglePassEye('confirmPassword', this)" title="Show/Hide Password">
+                                        <i class="fa-regular fa-eye-slash"></i>
+                                    </span>
+                                </div>
+                                <div class="text-danger d-none small mt-1" id="conferr">Passwords do not match</div>
+                            </div>
+
                             <!-- Role Selector -->
                             <div class="ml-field-group">
                                 <label class="ml-field-label">Account Role</label>
@@ -635,6 +648,24 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Live confirm-password match check
+    const confirmPass = document.getElementById('confirmPassword');
+    if (userPass && confirmPass) {
+        const confErr = document.getElementById('conferr');
+        const checkMatch = function () {
+            if (confirmPass.value === '') return;
+            if (userPass.value !== confirmPass.value) {
+                if (confErr) confErr.classList.remove('d-none');
+                confirmPass.setCustomValidity('Passwords do not match');
+            } else {
+                if (confErr) confErr.classList.add('d-none');
+                confirmPass.setCustomValidity('');
+            }
+        };
+        userPass.addEventListener('input', checkMatch);
+        confirmPass.addEventListener('input', checkMatch);
+    }
+
     // Role selector listener for farmer fields
     const roleSelect = document.getElementById('role');
     const farmerExtra = document.getElementById('farmerExtra');
@@ -685,6 +716,16 @@ function validateSignUp(e) {
     } else {
         const pErr = document.querySelector("#passerr");
         if (pErr) pErr.classList.add("d-none");
+    }
+
+    const confirmValue = document.getElementById('confirmPassword') ? document.getElementById('confirmPassword').value : '';
+    if (passwordValue !== confirmValue) {
+        const confErr = document.querySelector("#conferr");
+        if (confErr) confErr.classList.remove("d-none");
+        isValid = false;
+    } else {
+        const confErr = document.querySelector("#conferr");
+        if (confErr) confErr.classList.add("d-none");
     }
 
     const roleBox = document.getElementById("role");

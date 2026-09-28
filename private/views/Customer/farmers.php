@@ -742,7 +742,7 @@ $farmerAvatars = [
 .farmer-filter-actions{display:flex;gap:9px;margin-top:16px}.farmer-filter-apply,.farmer-filter-reset{min-height:42px;border-radius:10px;padding:9px 14px;font-weight:700;text-decoration:none;text-align:center}.farmer-filter-apply{flex:1;background:#178a53;color:#fff;border:0}.farmer-filter-apply:hover{background:#0f4d30;color:#fff}.farmer-filter-reset{border:1px solid #dce7dd;color:#49624f}
 .farmer-directory-list{padding:16px}.farmer-directory-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 14px}.farmer-directory-count{color:#5f7a67;font-size:.9rem}.farmer-search-input{max-width:280px}
 .farmer-result-list{display:grid;gap:12px}.farmer-result-card{display:grid;grid-template-columns:112px minmax(0,1fr) auto;gap:16px;align-items:center;padding:14px;border:1px solid #e6ede6;border-radius:15px;background:#fff;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}.farmer-result-card[hidden]{display:none}.farmer-result-card:hover{transform:translateY(-2px);border-color:#c8dfcb;box-shadow:0 10px 22px rgba(20,40,27,.08)}
-.farmer-result-avatar{width:112px;height:104px;object-fit:cover;border-radius:12px;background:#eef2ef}.farmer-result-main{min-width:0}.farmer-result-title{margin:0 0 4px;color:#14281b;font-size:1.02rem;font-weight:700}.farmer-result-title a{color:inherit;text-decoration:none}.farmer-result-title a:hover{color:#178a53}.farmer-result-description{margin:0 0 9px;color:#5f7a67;font-size:.88rem;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.farmer-result-meta{display:flex;flex-wrap:wrap;gap:8px 14px;color:#5f7a67;font-size:.8rem}.farmer-result-meta span{display:inline-flex;align-items:center;gap:5px}.farmer-result-rating{color:#b66a12!important}.farmer-result-actions{display:flex;align-items:center;gap:8px}.farmer-result-view{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:8px 13px;border:1px solid #178a53;border-radius:10px;color:#0f4d30;font-size:.84rem;font-weight:700;text-decoration:none;white-space:nowrap}.farmer-result-view:hover{background:#178a53;color:#fff}.farmer-result-favorite{width:38px;height:38px;border:1px solid #e6ede6;border-radius:10px;background:#fff;color:#5f7a67}.farmer-result-favorite:hover,.farmer-result-favorite.is-favorite{color:#178a53;border-color:#b6d6bd}
+.farmer-result-avatar{width:112px;height:104px;object-fit:cover;border-radius:12px;background:#eef2ef}.farmer-result-main{min-width:0}.farmer-result-title{margin:0 0 4px;color:#14281b;font-size:1.02rem;font-weight:700}.farmer-result-title a{color:inherit;text-decoration:none}.farmer-result-title a:hover{color:#178a53}.farmer-result-description{margin:0 0 9px;color:#5f7a67;font-size:.88rem;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.farmer-result-meta{display:flex;flex-wrap:wrap;gap:8px 14px;color:#5f7a67;font-size:.8rem}.farmer-result-meta span{display:inline-flex;align-items:center;gap:5px}.farmer-result-rating{color:#b66a12!important}.farmer-result-actions{display:flex;align-items:center;gap:8px}.farmer-result-view{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:8px 13px;border:1px solid #178a53;border-radius:10px;color:#0f4d30;font-size:.84rem;font-weight:700;text-decoration:none;white-space:nowrap}.farmer-result-view:hover{background:#178a53;color:#fff}.farmer-result-favorite{width:38px;height:38px;border:1px solid #e6ede6;border-radius:10px;background:#fff;color:#5f7a67}.farmer-result-favorite:hover,.farmer-result-favorite.is-favorite,.farmer-result-favorite.is-fav,.farmer-result-favorite.active{color:#178a53;border-color:#b6d6bd}
 .farmer-directory-empty{padding:42px 20px;text-align:center;color:#5f7a67}.farmer-directory-empty i{display:block;margin-bottom:10px;color:#178a53;font-size:2rem}.farmer-directory-pagination{display:flex;justify-content:center;align-items:center;gap:7px;padding:18px 4px 2px}.farmer-page-button{min-width:36px;height:36px;border:1px solid #e6ede6;border-radius:9px;background:#fff;color:#334b3a;font-weight:700}.farmer-page-button:hover,.farmer-page-button.active{background:#178a53;border-color:#178a53;color:#fff}.farmer-page-button:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:767.98px){.farmer-directory-layout{grid-template-columns:1fr}.farmer-filter-panel{position:static}.farmer-result-card{grid-template-columns:82px minmax(0,1fr);gap:12px;padding:11px}.farmer-result-avatar{width:82px;height:82px}.farmer-result-actions{grid-column:2;justify-content:flex-start}.farmer-directory-toolbar{align-items:stretch;flex-direction:column}.farmer-search-input{max-width:none}}
 @media(max-width:420px){.farmer-result-meta{gap:6px 10px}.farmer-result-description{-webkit-line-clamp:3}.farmer-directory-list{padding:11px}}
@@ -779,11 +779,26 @@ $farmerAvatars = [
                 </div>
                 <div class="farmer-result-list" id="farmerResultList">
                     <?php foreach ($farms as $index => $farm): ?>
-                        <?php
+<?php
                             $farmerId = (int)$farm['farmer_id'];
                             $farmerName = (string)($farm['stall_name'] ?? 'Local farm');
                             $farmerDescription = trim((string)($farm['description'] ?? ''));
-                            $farmerImage = $farmerAvatars[$index % count($farmerAvatars)];
+                            /* Farmer profile uploads (save-profile.php) land in
+                               public/Uploads/ as bare filenames. Resolve the DB
+                               name against that folder and keep the placeholder
+                               avatars only for farmers without an image file. */
+                            $dbImage = basename((string)($farm['profile_image'] ?? ''));
+                            $uploadDir = __DIR__ . '/../../../public/Uploads/';
+                            $uploadDirImg = __DIR__ . '/../../../public/Uploads/img/';
+                            $farmerImage = '';
+                            if ($dbImage !== '' && is_file($uploadDir . $dbImage)) {
+                                $farmerImage = '../public/Uploads/' . $dbImage;
+                            } elseif ($dbImage !== '' && is_file($uploadDirImg . $dbImage)) {
+                                $farmerImage = '../public/Uploads/img/' . $dbImage;
+                            }
+                            if ($farmerImage === '') {
+                                $farmerImage = $farmerAvatars[$index % count($farmerAvatars)];
+                            }
                             $farmerIsFavorite = in_array($farmerId, $favoriteFarmerIds, true);
                         ?>
                         <article class="farmer-result-card" data-farmer-search="<?= htmlspecialchars(mb_strtolower($farmerName . ' ' . $farmerDescription), ENT_QUOTES, 'UTF-8') ?>">
@@ -799,12 +814,13 @@ $farmerAvatars = [
                             </div>
                             <div class="farmer-result-actions">
                                 <a class="farmer-result-view" href="<?= ML_asset('farmer') . '?id=' . $farmerId ?>">View farm <i class="bi bi-arrow-up-right ms-1" aria-hidden="true"></i></a>
-                                <?php if (!empty($_SESSION['loggedIn']) && ($_SESSION['role'] ?? '') === 'customer'): ?>
-                                    <form method="post" action="<?= ML_asset('api/favorites.php') ?>">
-                                        <input type="hidden" name="farmer_id" value="<?= $farmerId ?>">
-                                        <input type="hidden" name="action" value="toggle">
-                                        <button class="farmer-result-favorite <?= $farmerIsFavorite ? 'is-favorite' : '' ?>" type="submit" aria-label="<?= $farmerIsFavorite ? 'Remove from favorites' : 'Add to favorites' ?>"><i class="bi <?= $farmerIsFavorite ? 'bi-heart-fill' : 'bi-heart' ?>" aria-hidden="true"></i></button>
-                                    </form>
+<?php if (!empty($_SESSION['loggedIn']) && ($_SESSION['role'] ?? '') === 'customer'): ?>
+                                    <button class="farmer-result-favorite <?= $farmerIsFavorite ? 'is-fav' : '' ?>"
+                                            type="button"
+                                            data-fav-btn data-fav-type="farmer" data-fav-id="<?= $farmerId ?>"
+                                            aria-label="<?= $farmerIsFavorite ? 'Remove from favorites' : 'Add to favorites' ?>" title="Save to favorites">
+                                        <i class="bi <?= $farmerIsFavorite ? 'bi-heart-fill' : 'bi-heart' ?>" aria-hidden="true"></i>
+                                    </button>
                                 <?php endif; ?>
                             </div>
                         </article>

@@ -430,12 +430,36 @@ function catIcon($name, $extraClass = '')
 // liye ye do jagah dekhta hai: nayi uploads 'Uploads/img/' me, legacy records
 // 'Uploads/' root me. Jo file disk par na mile wahan '' return hota hai taake
 // caller icon placeholder par fallback kar sake.
+//
+// Jab DB me koi renderable path/link stored ho (jaise seed ya uploads ka
+// relative path), to wahi value verbatim wapas milti hai — file disk par hai
+// to. Is tarah seed/DB ki value hi exact render hoti hai. Saare uploads
+// public/Uploads/ ke under hain, koi private uploads root use nahi hota.
 function prodImgSrc($p)
 {
     if (empty($p['image_url'])) {
         return '';
     }
-    $file = basename((string)$p['image_url']);
+    $url = (string)$p['image_url'];
+
+    // Already a renderable link/bound path: verify the file under any uploads
+    // root and echo the stored value back verbatim, so what is in the DB is
+    // exactly what renders.
+    if (strpos($url, '://') !== false || $url[0] === '/' || strpos($url, '../') !== false) {
+        $file = basename($url);
+        $roots = [
+            __DIR__ . '/../../public/Uploads/img/',
+            __DIR__ . '/../../public/Uploads/',
+        ];
+        foreach ($roots as $root) {
+            if (is_file($root . $file)) {
+                return $url;
+            }
+        }
+        return '';
+    }
+
+    $file = basename($url);
     $root = __DIR__ . '/../../public/Uploads/';
     foreach (['img/' . $file, $file] as $rel) {
         if (is_file($root . $rel)) {

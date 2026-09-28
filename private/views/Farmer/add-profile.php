@@ -71,7 +71,7 @@ include __DIR__ . '/../../../public/components/farmer-sidebar.php';
                                     <?php if (!empty($profileData['profile_image'])): ?>
                                         <div class="mt-2">
                                             <small class="f-muted d-block mb-1">Current Image:</small>
-                                            <img src="uploads/<?php echo sanitize_output($profileData['profile_image']); ?>" width="60" height="60" class="rounded-circle object-fit-cover border" style="border-color:var(--f-line) !important;">
+                                            <img src="<?php echo ML_asset('Uploads/' . basename($profileData['profile_image'])); ?>" width="60" height="60" class="rounded-circle object-fit-cover border" style="border-color:var(--f-line) !important;">
                                         </div>
                                     <?php endif; ?>
                                 </div>

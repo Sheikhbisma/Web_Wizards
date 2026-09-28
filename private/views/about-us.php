@@ -624,7 +624,6 @@ $aboutStats = selectData($pdo, "SELECT
     </div>
 </section>
 
-<!-- Section 2: Platform Architecture & Pillars (SRS 1.4 & 1.6) -->
 <section class="py-5" style="background: #f4f8ee;">
     <div class="container py-4">
         <div class="text-center mb-5" data-reveal="up">
@@ -685,8 +684,8 @@ $aboutStats = selectData($pdo, "SELECT
         <div class="row g-4 justify-content-center" data-stagger="110">
             <div class="col-6 col-md-3">
                 <div class="about-team-card">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="Ayesha Khan" class="about-team-avatar">
-                    <h6 class="fw-bold mb-1 text-dark">Ayesha Khan</h6>
+                    <img src="<?php  echo ML_asset('Uploads/img/sunain.jpeg'); ?>" alt="Ayesha Khan" class="about-team-avatar">
+                    <h6 class="fw-bold mb-1 text-dark">Sunain Bediya</h6>
                     <span class="text-success small fw-semibold">Lead Full-Stack Architect</span>
                     <p class="text-muted small mt-2 mb-0">Specialized in MVC web systems and database optimization.</p>
                 </div>
@@ -694,8 +693,8 @@ $aboutStats = selectData($pdo, "SELECT
 
             <div class="col-6 col-md-3">
                 <div class="about-team-card">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" alt="Tariq Mahmood" class="about-team-avatar">
-                    <h6 class="fw-bold mb-1 text-dark">Tariq Mahmood</h6>
+                    <img src="<?php  echo ML_asset('Uploads/img/wania.jpeg'); ?>" alt="Tariq Mahmood" class="about-team-avatar">
+                    <h6 class="fw-bold mb-1 text-dark">Wania Abrar</h6>
                     <span class="text-success small fw-semibold">UI/UX &amp; Frontend Engineer</span>
                     <p class="text-muted small mt-2 mb-0">Crafting intuitive, accessible, and responsive user experiences.</p>
                 </div>
@@ -703,8 +702,8 @@ $aboutStats = selectData($pdo, "SELECT
 
             <div class="col-6 col-md-3">
                 <div class="about-team-card">
-                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80" alt="Zainab Fatima" class="about-team-avatar">
-                    <h6 class="fw-bold mb-1 text-dark">Zainab Fatima</h6>
+                    <img src="<?php  echo ML_asset('Uploads/img/sawera.jpeg'); ?>" alt="Zainab Fatima" class="about-team-avatar">
+                    <h6 class="fw-bold mb-1 text-dark">Syeda Sawera</h6>
                     <span class="text-success small fw-semibold">Agricultural Liaison</span>
                     <p class="text-muted small mt-2 mb-0">Connecting with regional farmer cooperatives and market committees.</p>
                 </div>
@@ -712,8 +711,8 @@ $aboutStats = selectData($pdo, "SELECT
 
             <div class="col-6 col-md-3">
                 <div class="about-team-card">
-                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80" alt="Hamza Ali" class="about-team-avatar">
-                    <h6 class="fw-bold mb-1 text-dark">Hamza Ali</h6>
+                    <img src="<?php  echo ML_asset('Uploads/img/bisma.jpeg'); ?>" alt="Hamza Ali" class="about-team-avatar">
+                    <h6 class="fw-bold mb-1 text-dark">Bisma Sheikh</h6>
                     <span class="text-success small fw-semibold">QA &amp; Security Lead</span>
                     <p class="text-muted small mt-2 mb-0">Ensuring zero downtime, secure transactions, and robust data integrity.</p>
                 </div>

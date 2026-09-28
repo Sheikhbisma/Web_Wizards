@@ -75,6 +75,30 @@ include __DIR__ . '/../../../public/components/farmer-sidebar.php';
                 </div>
             </div>
         </div>
+
+        <?php
+        /* Embedded map of every market your stall trades at, same shared map
+           the customer pages use. Points are the market themselves: the stall
+           moves with the market, so the pin, the direction link and the
+           address all describe the hub your goods travel to. */
+        $pmMapId  = 'mlpFarmerMarketsMap';
+        $pmPoints = [];
+        foreach ($selectMarket as $m) {
+            if (empty($m['latitude']) || empty($m['longitude'])) continue;
+            $pmPoints[] = [
+                'lat'  => (float)$m['latitude'],
+                'lng'  => (float)$m['longitude'],
+                'name' => $m['market_name'],
+                'kind' => 'market',
+                'addr' => $m['address'] ?? '',
+                'url'  => '',
+            ];
+        }
+        $pmTitle  = 'Your Market Stalls';
+        $pmKicker = 'Stall Locations';
+        $pmSub    = 'Every market to which your stall is assigned appears on this map. Open directions to the one you are visiting this week.';
+        include __DIR__ . '/../Customer/partials/pickup-map.php';
+        ?>
     <?php endif; ?>
 </div>
 

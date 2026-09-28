@@ -849,7 +849,7 @@ $themeClasses = [
 
         <div class="mlp-map-grid">
             <div class="mlp-map-shell">
-                <div id="mlpHomeMap" role="region" aria-label="Map of MarketLink markets and farmers"></div>
+                <div id="mlpHomeMap" class="mlp-map-canvas" role="region" aria-label="Map of MarketLink markets and farmers"></div>
                 <div class="mlp-map-legend">
                     <span><i class="bi bi-square-fill mlp-dot-market"></i> Market / pickup point</span>
                     <span><i class="bi bi-circle-fill mlp-dot-farmer"></i> Farmer stall</span>

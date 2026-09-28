@@ -6,6 +6,24 @@ $cid = (int)$cust['customer_id'];
 
 $tab = $_GET['tab'] ?? 'products';
 
+/* Counts for all three tabs run up front, independent of $tab. If they
+   were fetched only for the active tab, the two inactive chips would always
+   read (0) and the header total would only count the open tab, so a customer
+   with saved farmers and markets would be told they had saved nothing. */
+$countProducts = (int)selectData($pdo, "SELECT COUNT(*) AS n
+    FROM favorites AS fa
+    INNER JOIN products AS p ON p.product_id = fa.product_id
+    WHERE fa.customer_id = ? AND fa.product_id IS NOT NULL", [$cid])[0]['n'];
+$countFarmers = (int)selectData($pdo, "SELECT COUNT(*) AS n
+    FROM favorites AS fa
+    INNER JOIN farmers AS f ON f.farmer_id = fa.farmer_id
+    INNER JOIN users AS u ON u.id = f.user_id
+    WHERE fa.customer_id = ? AND fa.farmer_id IS NOT NULL", [$cid])[0]['n'];
+$countMarkets = (int)selectData($pdo, "SELECT COUNT(*) AS n
+    FROM favorites AS fa
+    INNER JOIN markets AS m ON m.market_id = fa.market_id
+    WHERE fa.customer_id = ? AND fa.market_id IS NOT NULL AND m.is_active = 1", [$cid])[0]['n'];
+
 $favProducts = [];
 $favFarmers = [];
 $favMarkets = [];
@@ -31,7 +49,7 @@ if ($tab === 'products') {
         WHERE fa.customer_id = ? AND m.is_active = 1 ORDER BY fa.created_at DESC", [$cid]);
 }
 
-$allFav = count($favProducts) + count($favFarmers) + count($favMarkets);
+$allFav = $countProducts + $countFarmers + $countMarkets;
 ?>
 
 <div class="c-page">
@@ -46,9 +64,9 @@ $allFav = count($favProducts) + count($favFarmers) + count($favMarkets);
         </div>
 
         <div class="d-flex flex-wrap gap-2 mb-4">
-            <a href="?page=favorites&tab=products" class="ml-chip <?php echo $tab === 'products' ? 'active' : ''; ?>">Products (<?php echo count($favProducts); ?>)</a>
-            <a href="?page=favorites&tab=farmers" class="ml-chip <?php echo $tab === 'farmers' ? 'active' : ''; ?>">Farmers (<?php echo count($favFarmers); ?>)</a>
-            <a href="?page=favorites&tab=markets" class="ml-chip <?php echo $tab === 'markets' ? 'active' : ''; ?>">Markets (<?php echo count($favMarkets); ?>)</a>
+            <a href="?page=favorites&tab=products" class="ml-chip <?php echo $tab === 'products' ? 'active' : ''; ?>">Products (<?php echo $countProducts; ?>)</a>
+            <a href="?page=favorites&tab=farmers" class="ml-chip <?php echo $tab === 'farmers' ? 'active' : ''; ?>">Farmers (<?php echo $countFarmers; ?>)</a>
+            <a href="?page=favorites&tab=markets" class="ml-chip <?php echo $tab === 'markets' ? 'active' : ''; ?>">Markets (<?php echo $countMarkets; ?>)</a>
         </div>
 
         <?php if ($tab === 'products'): ?>

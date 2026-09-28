@@ -246,6 +246,15 @@ constant names.
 
 ---
 
+## Documentation
+
+- `docs/TEST_DATA.md` — demo / test data reference (accounts, markets,
+  farmers, products, orders, reviews, favorites) used for demos and QA.
+- `docs/API.md` — JSON (AJAX) endpoint reference: cart, favorites, reviews,
+  orders, notifications, profile, live search and the assistant chat.
+
+---
+
 ## Troubleshooting
 
 **Blank page or "Connection failed"** — `dbconnect.php` is missing or the

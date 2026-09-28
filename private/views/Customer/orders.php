@@ -17,6 +17,24 @@ $orders = selectData($pdo, "SELECT o.*, f.stall_name, f.farmer_id, m.market_name
     INNER JOIN farmers AS f ON f.farmer_id = o.farmer_id
     LEFT JOIN markets AS m ON m.market_id = o.market_id
     WHERE " . $where . " ORDER BY o.order_date DESC", $params);
+
+/* Un-reviewed item counts, one query for the whole list. The Rate button is
+   only rendered on the order detail page, so without a marker here a
+   completed order looks identical to a fully reviewed one and the customer
+   has no way to know a review is still owed. */
+$pendingByOrder = [];
+if (!empty($orders)) {
+    $orderIds = array_map('intval', array_column($orders, 'order_id'));
+    $pendingRows = selectData($pdo, "SELECT oi.order_id, COUNT(*) AS pending
+        FROM order_items AS oi
+        INNER JOIN orders AS o ON o.order_id = oi.order_id
+        LEFT JOIN reviews AS r ON r.order_id = oi.order_id AND r.product_id = oi.product_id
+        WHERE oi.order_id IN (" . implode(',', $orderIds) . ")
+          AND o.order_status = 'completed'
+          AND r.review_id IS NULL
+        GROUP BY oi.order_id", []);
+    foreach ($pendingRows as $pr) $pendingByOrder[(int)$pr['order_id']] = (int)$pr['pending'];
+}
 ?>
 
 <div class="c-page">
@@ -87,6 +105,12 @@ $orders = selectData($pdo, "SELECT o.*, f.stall_name, f.farmer_id, m.market_name
                                 </div>
                             </div>
                             <div class="c-actions">
+                                <?php $pendingReview = $pendingByOrder[(int)$o['order_id']] ?? 0; ?>
+                                <?php if ($o['order_status'] === 'completed' && $pendingReview > 0): ?>
+                                    <a href="<?php echo ML_asset('order') . '?id=' . $o['order_id']; ?>#review" class="c-btn sm review-pending">
+                                        <i class="bi bi-star-fill me-1"></i> Rate <?= $pendingReview ?> item<?= $pendingReview > 1 ? 's' : '' ?>
+                                    </a>
+                                <?php endif; ?>
                                 <a href="<?php echo ML_asset('order') . '?id=' . $o['order_id']; ?>" class="c-btn outline sm">View Details <i class="bi bi-arrow-right"></i></a>
                                 <?php if ($editable): ?>
                                     <a href="<?php echo ML_asset('order') . '?id=' . $o['order_id'] . '#modify'; ?>" class="c-btn ghost sm"><i class="bi bi-pencil"></i> Modify / Cancel</a>

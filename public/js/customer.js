@@ -131,12 +131,25 @@
                             if (fav.hasAttribute('data-fav-silent')) fav.closest('[data-fav-item]') && fav.closest('[data-fav-item]').remove();
                             var btn = fav.querySelector('.bi');
                             if (btn) { btn.className = 'bi bi-heart'; }
-                            fav.classList.remove('is-fav');
+                            fav.classList.remove('is-fav', 'active');
+                            /* Buttons that carry their own caption (the farmer
+                               stall button) need the text flipped too, not
+                               just the glyph. */
+                            var lbl = fav.querySelector('.farmer-fav-label');
+                            if (lbl) { lbl.textContent = 'Favorite Stall'; }
+                            var mlbl = fav.querySelector('.market-save-label');
+                            if (mlbl) { mlbl.textContent = 'Save Market'; }
+                            fav.setAttribute('title', 'Save to favorites');
                         } else {
                             toast('Added to favorites');
                             var btn = fav.querySelector('.bi');
                             if (btn) { btn.className = 'bi bi-heart-fill'; }
-                            fav.classList.add('is-fav');
+                            fav.classList.add('is-fav', 'active');
+                            var lbl = fav.querySelector('.farmer-fav-label');
+                            if (lbl) { lbl.textContent = 'Favorited'; }
+                            var mlbl = fav.querySelector('.market-save-label');
+                            if (mlbl) { mlbl.textContent = 'Saved'; }
+                            fav.setAttribute('title', 'Remove from favorites');
                         }
                         setBadge('[data-fav-count]', res.count);
                     } else {

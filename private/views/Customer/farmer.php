@@ -449,7 +449,97 @@ if ($isLoggedCustomer) {
     color: #1a2412;
 }
 
-/* Theme Product Card */
+    /* Theme Product Card */
+    .farmer-cart-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .farmer-cart-actions .qty-selector {
+        display: flex;
+        align-items: center;
+        background: #fff;
+        border: 2px solid #dce8cf;
+        border-radius: 50px;
+        overflow: hidden;
+        height: 40px;
+        flex: 0 0 auto;
+    }
+
+    .farmer-cart-actions .qty-btn {
+        background: transparent;
+        border: none;
+        color: #4a5f31;
+        font-size: 1rem;
+        width: 34px;
+        height: 100%;
+        cursor: pointer;
+        transition: background 0.2s;
+        line-height: 1;
+    }
+
+    .farmer-cart-actions .qty-btn:hover {
+        background: #eef4e6;
+    }
+
+    .farmer-cart-actions .qty-input {
+        width: 34px;
+        text-align: center;
+        border: none;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #1a261a;
+        background: transparent;
+        outline: none;
+        pointer-events: none;
+        -moz-appearance: textfield;
+    }
+
+    .farmer-cart-actions .qty-input::-webkit-outer-spin-button,
+    .farmer-cart-actions .qty-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .farmer-add-btn {
+        flex: 1 1 auto;
+        height: 40px;
+        border: none;
+        border-radius: 50px;
+        background: #a0bc79;
+        color: #1a261a;
+        font-weight: 700;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.15s;
+        white-space: nowrap;
+    }
+
+    .farmer-add-btn:hover {
+        background: #8fae63;
+    }
+
+    .farmer-add-btn:active {
+        transform: scale(0.97);
+    }
+
+    .farmer-add-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    @media (max-width: 400px) {
+        .farmer-cart-actions {
+            flex-wrap: wrap;
+        }
+
+        .farmer-add-btn {
+            flex: 1 1 100%;
+        }
+    }
+
 .farmer-prod-card {
     background: linear-gradient(180deg, #ffffff 0%, #f4f8ee 100%);
     border: 1px solid #d4e4be;
@@ -563,14 +653,19 @@ if ($isLoggedCustomer) {
                     </a>
 
                     <?php if ($isLoggedCustomer): ?>
-                        <form method="POST" action="<?= ML_asset('api/favorites.php') ?>" style="display:inline;">
-                            <input type="hidden" name="farmer_id" value="<?= $fid ?>">
-                            <input type="hidden" name="action" value="toggle">
-                            <button type="submit" class="farmer-hero-btn-secondary">
-                                <i class="<?= $isFav ? 'fas fa-heart text-danger' : 'far fa-heart' ?>"></i>
-                                <?= $isFav ? 'Favorited' : 'Favorite Stall' ?>
-                            </button>
-                        </form>
+                        <?php /* This used to be a plain <form> posting to
+                                 ML_asset('api/favorites.php'). No such file has
+                                 ever existed in public/, so every click 404'd
+                                 and the stall was never saved. It now uses the
+                                 same AJAX path as every other heart: the
+                                 data-fav-btn attributes are picked up by
+                                 customer.js, which posts to
+                                 private/backend-scripting/customer-fav.php
+                                 along with the CSRF token. */ ?>
+                        <button type="button" class="farmer-hero-btn-secondary<?= $isFav ? ' is-fav' : '' ?>" data-fav-btn data-fav-type="farmer" data-fav-id="<?= $fid ?>" title="<?= $isFav ? 'Remove from favorites' : 'Save to favorites' ?>">
+                            <i class="bi <?= $isFav ? 'bi-heart-fill' : 'bi-heart' ?>"></i>
+                            <span class="farmer-fav-label"><?= $isFav ? 'Favorited' : 'Favorite Stall' ?></span>
+                        </button>
                     <?php endif; ?>
                 </div>
             </div>
@@ -722,11 +817,14 @@ if ($isLoggedCustomer) {
                                 <h4 class="farmer-prod-title"><?= htmlspecialchars($p['name']) ?></h4>
                                 <div class="farmer-prod-price">$<?= number_format((float)$p['price'], 2) ?> <small class="text-muted fw-normal">/ <?= htmlspecialchars($p['unit'] ?? 'unit') ?></small></div>
                                 
-                                <form method="POST" action="<?= ML_asset('cart_actions.php') ?>" class="mt-2">
-                                    <input type="hidden" name="action" value="add">
-                                    <input type="hidden" name="product_id" value="<?= (int)$p['product_id'] ?>">
-                                    <input type="hidden" name="quantity" value="1">
-                                    <button type="submit" class="btn btn-sm w-100 rounded-pill fw-bold" style="background: #a0bc79; color: #1a261a;">
+                                <?php $maxStock = max(1, (int)$p['stock_quantity']); ?>
+                                <form class="cart-form farmer-cart-actions" onsubmit="return false;">
+                                    <div class="qty-selector">
+                                        <button type="button" class="qty-btn" data-qty-btn="dec" data-add-decor="-">&minus;</button>
+                                        <input type="number" class="qty-input" data-qty-input value="1" min="1" max="<?= $maxStock ?>" readonly aria-label="Quantity for <?= htmlspecialchars($p['name']) ?>">
+                                        <button type="button" class="qty-btn" data-qty-btn="inc" data-add-decor="+">&plus;</button>
+                                    </div>
+                                    <button type="button" class="farmer-add-btn" data-add-cart="<?= (int)$p['product_id'] ?>">
                                         <i class="fas fa-shopping-cart me-1"></i> Add to Cart
                                     </button>
                                 </form>
@@ -740,40 +838,53 @@ if ($isLoggedCustomer) {
 </section>
 
 <!-- ============================================================
-     LOCATION & MARKETS SECTION (OpenStreetMap Embed)
+     LOCATION & MARKETS SECTION
+     Shared Leaflet map + directions list, identical to the home page
+     map so directions work the same way everywhere.
      ============================================================ -->
-<?php if (!empty($mapFrameUrl)): ?>
-<section class="py-5">
+<?php
+$pmMapId  = 'mlpFarmerMap';
+$pmPoints = [];
+if (!empty($f['latitude']) && !empty($f['longitude'])) {
+    $pmPoints[] = [
+        'lat'  => (float)$f['latitude'],
+        'lng'  => (float)$f['longitude'],
+        'name' => $f['stall_name'] ?? 'Farm stall',
+        'kind' => 'farmer',
+        'addr' => $f['address'] ?? '',
+        'url'  => '',
+    ];
+}
+foreach ($stalls as $s) {
+    $pmPoints[] = [
+        'lat'  => (float)$s['latitude'],
+        'lng'  => (float)$s['longitude'],
+        'name' => $s['market_name'],
+        'kind' => 'market',
+        'addr' => $s['address'] ?? '',
+        'url'  => ML_asset('market') . '?id=' . (int)$s['market_id'],
+    ];
+}
+$pmTitle  = 'Find ' . ($f['stall_name'] ?? 'Our Stall');
+$pmKicker = 'Location &amp; Pickup Markets';
+$pmSub    = 'The farm and every market stall appear on the map. Open directions to whichever pickup point suits you.';
+include __DIR__ . '/partials/pickup-map.php';
+?>
+
+<?php if (!empty($stalls)): ?>
+<section class="py-4">
     <div class="container">
-        <div class="text-center mb-4">
-            <span class="farmer-kicker">Find Our Stall</span>
-            <h2 class="farmer-story-heading">Location & Pickup Markets</h2>
-        </div>
-        <div class="row g-4 align-items-center">
-            <div class="col-lg-8">
-                <div class="rounded-4 overflow-hidden shadow-sm border">
-                    <iframe width="100%" height="380" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="<?= $mapFrameUrl ?>"></iframe>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="farmer-forest-widget-card">
-                    <h4 class="fw-bold mb-3" style="color: #1a2412;"><i class="fas fa-map-marker-alt me-2" style="color: #4a5f31;"></i> Stalls & Schedules</h4>
-                    <p class="small mb-3" style="color: #55624c;">Visit our stall at the following local markets:</p>
-                    
-                    <?php if (!empty($stalls)): ?>
-                        <ul class="list-unstyled mb-0">
-                            <?php foreach ($stalls as $st): ?>
-                                <li class="border-bottom pb-2 mb-2" style="border-color: #d4e4be !important;">
-                                    <strong class="d-block" style="color: #1a2412;"><?= htmlspecialchars($st['market_name']) ?></strong>
-                                    <small style="color: #55624c;">Stall #<?= htmlspecialchars($st['stall_number'] ?? 'N/A') ?> — <?= htmlspecialchars($st['day_of_week'] ?? 'Everyday') ?></small>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    <?php else: ?>
-                        <p class="mb-0" style="color: #55624c;">Farm location: <?= htmlspecialchars($f['city'] ?? 'Local Region') ?></p>
-                    <?php endif; ?>
-                </div>
-            </div>
+        <div class="farmer-forest-widget-card mx-auto" style="max-width: 720px;">
+            <h4 class="fw-bold mb-3" style="color: #1a2412;"><i class="fas fa-map-marker-alt me-2" style="color: #4a5f31;"></i> Stalls &amp; Schedules</h4>
+            <p class="small mb-3" style="color: #55624c;">Visit our stall at the following local markets:</p>
+            <ul class="list-unstyled mb-0">
+                <?php foreach ($stalls as $st): ?>
+                    <li class="border-bottom pb-2 mb-2" style="border-color: #d4e4be !important;">
+                        <strong class="d-block" style="color: #1a2412;"><?= htmlspecialchars($st['market_name']) ?></strong>
+                        <small style="color: #55624c;">Stall #<?= htmlspecialchars($st['stall_number'] ?? 'N/A') ?> — <?= htmlspecialchars($st['day_of_week'] ?? 'Everyday') ?></small>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
         </div>
     </div>
 </section>

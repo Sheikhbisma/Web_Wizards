@@ -28,6 +28,16 @@ $allMarkets = selectData($pdo, "SELECT market_id, market_name FROM markets WHERE
 $mapUrl = 'https://www.openstreetmap.org/export/embed.html?bbox=' . ($market['longitude'] - 0.01) . '%2C' . ($market['latitude'] - 0.008) . '%2C' . ($market['longitude'] + 0.01) . '%2C' . ($market['latitude'] + 0.008) . '&layer=mapnik&marker=' . $market['latitude'] . '%2C' . $market['longitude'];
 $dirUrl = 'https://www.openstreetmap.org/directions?from=&to=' . $market['latitude'] . '%2C' . $market['longitude'];
 
+/* Save-this-market state. The detail page had no heart at all, so the only
+   way to save a market was from the listing grid. One lookup, guarded, so a
+   logged-out visitor pays nothing for it. */
+$isLoggedCustomer = !empty($_SESSION['loggedIn']) && ($_SESSION['role'] ?? '') === 'customer';
+$marketIsFav = false;
+if ($isLoggedCustomer) {
+    $mCust = selectData($pdo, "SELECT customer_id FROM customers WHERE user_id = ?", [$_SESSION['user_id']]);
+    if (!empty($mCust)) $marketIsFav = isFav($pdo, $mCust[0]['customer_id'], null, null, $marketId);
+}
+
 $fruitCards = [
     [
         'title' => 'Peaches',
@@ -421,6 +431,12 @@ $fruitCards = [
             </div>
 
             <div class="d-flex flex-wrap gap-2">
+                <?php if ($isLoggedCustomer): ?>
+                    <button type="button" class="btn btn-light rounded-pill px-3 py-2 fw-bold shadow-sm market-save-btn" data-fav-btn data-fav-type="market" data-fav-id="<?= $marketId ?>" title="<?= $marketIsFav ? 'Remove from favorites' : 'Save to favorites' ?>">
+                        <i class="bi <?= $marketIsFav ? 'bi-heart-fill' : 'bi-heart' ?>"></i>
+                        <span class="market-save-label"><?= $marketIsFav ? 'Saved' : 'Save Market' ?></span>
+                    </button>
+                <?php endif; ?>
                 <span class="badge bg-light text-dark px-3 py-2 rounded-pill fw-semibold shadow-sm">
                     <i class="fa-regular fa-calendar-days text-success me-1"></i> <?php echo marketPickups($market); ?>
                 </span>
@@ -690,23 +706,52 @@ if ($prodImgUrl === '') $prodImgUrl = 'https://images.unsplash.com/photo-1592924
                 <?php endif; ?>
             </div>
 
-            <!-- Right: Interactive Location Map -->
+            <!-- Right: Directions for this market and each of its stalls -->
             <div class="col-lg-5">
                 <div class="map-card-wrapper h-100 d-flex flex-column justify-content-between">
                     <div>
                         <h4 class="fw-bold text-dark mb-2" style="font-family: 'Fraunces', Georgia, serif;">
-                            <i class="fa-solid fa-location-dot text-danger me-2"></i> Stall Location Map
+                            <i class="fa-solid fa-location-dot text-danger me-2"></i> Get Directions
                         </h4>
-                        <p class="text-muted small mb-3">Collect your fresh order directly at the market stall during scheduled hours.</p>
-                        
-                        <iframe class="map-frame mb-3" src="<?php echo $mapUrl; ?>" loading="lazy" style="height: 340px; border-radius: 20px; width: 100%; border: 1.5px solid #dce8cf;"></iframe>
+                        <p class="text-muted small mb-3">Open this market, or a specific stall, in your map app. The full map is further down the page.</p>
+
+                        <div class="mlp-map-list">
+                            <div class="mlp-map-row">
+                                <span class="mlp-map-ico market"><i class="bi bi-shop"></i></span>
+                                <div class="mlp-map-meta">
+                                    <span class="mlp-map-name"><?php echo sanitize_output($market['market_name']); ?></span>
+                                    <span class="mlp-map-addr"><?php echo sanitize_output($market['address'] ?? ''); ?></span>
+                                </div>
+                                <a class="mlp-map-dir" target="_blank" rel="noopener" href="<?php echo $dirUrl; ?>"
+                                   title="Directions to <?php echo sanitize_output($market['market_name']); ?>"
+                                   aria-label="Directions to <?php echo sanitize_output($market['market_name']); ?>">
+                                    <i class="bi bi-signpost-split"></i>
+                                </a>
+                            </div>
+
+                            <?php foreach ($farmers as $fm): ?>
+                                <div class="mlp-map-row">
+                                    <span class="mlp-map-ico farmer"><i class="bi bi-person-fill"></i></span>
+                                    <div class="mlp-map-meta">
+                                        <a href="<?php echo ML_asset('farmer') . '?id=' . (int)$fm['farmer_id']; ?>" class="mlp-map-name"><?php echo sanitize_output($fm['stall_name']); ?></a>
+                                        <span class="mlp-map-addr">Stall #<?php echo sanitize_output($fm['stall_number'] ?? '1'); ?> &middot; <?php echo sanitize_output($fm['day_of_week'] ?? 'Everyday'); ?></span>
+                                    </div>
+                                    <a class="mlp-map-dir" target="_blank" rel="noopener"
+                                       href="https://www.openstreetmap.org/directions?to=<?php echo (float)$fm['latitude']; ?>%2C<?php echo (float)$fm['longitude']; ?>"
+                                       title="Directions to <?php echo sanitize_output($fm['stall_name']); ?>"
+                                       aria-label="Directions to <?php echo sanitize_output($fm['stall_name']); ?>">
+                                        <i class="bi bi-signpost-split"></i>
+                                    </a>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
-                    
+
                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2 border-top border-success-subtle">
                         <span class="text-muted small">
                             <i class="fa-solid fa-hand-holding-dollar text-success me-1"></i> Cash paid at stall pickup
                         </span>
-                        <a href="<?php echo $dirUrl; ?>" target="_blank" class="btn btn-sm btn-outline-success rounded-pill px-3 py-2 fw-bold">
+                        <a href="<?php echo $dirUrl; ?>" target="_blank" rel="noopener" class="btn btn-sm btn-outline-success rounded-pill px-3 py-2 fw-bold">
                             <i class="fa-solid fa-diamond-turn-right me-1"></i> Open in Maps
                         </a>
                     </div>
@@ -717,13 +762,52 @@ if ($prodImgUrl === '') $prodImgUrl = 'https://images.unsplash.com/photo-1592924
     </div>
 </div>
 
+<!-- ============================================================
+     FULL MAP + DIRECTIONS
+     Shared Leaflet map, identical to the home page map, listing this
+     market plus every stall trading here.
+     ============================================================ -->
+<?php
+$pmMapId  = 'mlpMarketMap';
+$pmPoints = [[
+    'lat'  => (float)$market['latitude'],
+    'lng'  => (float)$market['longitude'],
+    'name' => $market['market_name'],
+    'kind' => 'market',
+    'addr' => $market['address'] ?? '',
+    'url'  => '',
+]];
+foreach ($farmers as $fm) {
+    $pmPoints[] = [
+        'lat'  => (float)$fm['latitude'],
+        'lng'  => (float)$fm['longitude'],
+        'name' => $fm['stall_name'],
+        'kind' => 'farmer',
+        'addr' => 'Stall #' . ($fm['stall_number'] ?? '1'),
+        'url'  => ML_asset('farmer') . '?id=' . (int)$fm['farmer_id'],
+    ];
+}
+$pmTitle  = 'Navigate To ' . $market['market_name'];
+$pmKicker = 'Market Map';
+$pmSub    = 'This market and every stall trading here are pinned. Open directions to the one you are collecting from.';
+include __DIR__ . '/partials/pickup-map.php';
+?>
+
 <!-- Parallax Scroll Effect for Video Hero -->
 <script>
 (function() {
+    var videoEl = document.getElementById('marketHeroVideo');
+    if (!videoEl) { return; }
+
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (reduce.matches) {
+        videoEl.style.transform = 'translate(-50%, -50%)';
+        return;
+    }
+
     window.addEventListener('scroll', function() {
         var sc = window.scrollY;
-        var videoEl = document.getElementById('marketHeroVideo');
-        if (videoEl && sc < 600) {
+        if (sc < 600) {
             videoEl.style.transform = 'translate(-50%, calc(-50% + ' + (sc * 0.3) + 'px))';
         }
     }, { passive: true });

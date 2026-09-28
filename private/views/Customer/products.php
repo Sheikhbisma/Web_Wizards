@@ -41,6 +41,19 @@ $harvestStats = selectData($pdo, "SELECT
     (SELECT COUNT(*) FROM farmers WHERE approval_status = 'approved') AS farmers,
     (SELECT COUNT(*) FROM products WHERE is_available = 1 AND is_sold_out = 0) AS products")[0];
 
+/* Saved-product ids for the heart icons in the grid. Fetched once as a flat
+   list rather than calling isFav() per card: the grid can hold every product
+   in the catalogue, and one query per card is a query per card. */
+$isLoggedCustomer = !empty($_SESSION['loggedIn']) && ($_SESSION['role'] ?? '') === 'customer';
+$favProductIds = [];
+if ($isLoggedCustomer) {
+    $favCust = selectData($pdo, "SELECT customer_id FROM customers WHERE user_id = ?", [$_SESSION['user_id']]);
+    if (!empty($favCust)) {
+        $favRows = selectData($pdo, "SELECT product_id FROM favorites WHERE customer_id = ? AND product_id IS NOT NULL", [$favCust[0]['customer_id']]);
+        $favProductIds = array_map('intval', array_column($favRows, 'product_id'));
+    }
+}
+
 function mlq($k, $v, $keep = []) {
     $p = array_merge($_GET, $keep);
     if ($v === '' || $v === 0) unset($p[$k]); else $p[$k] = $v;
@@ -1573,8 +1586,14 @@ function getLocalOrCustomImg($p) {
                     // worth surfacing when stock is scarce.
                     $pct = $stock <= 0 ? 0 : max(7, min(100, (int)round($stock / 30 * 100)));
                     $rating = (float)($p['avg_rating'] ?? 0);
+                    $mlIsFav = $favProductIds && in_array((int)$p['product_id'], $favProductIds, true);
                 ?>
                     <article class="ml-card<?= $mlIdx >= $mlLimit ? ' is-beyond' : '' ?>">
+                        <?php if ($isLoggedCustomer): ?>
+                            <button type="button" class="ml-fav<?= $mlIsFav ? ' is-fav' : '' ?>" data-fav-btn data-fav-type="product" data-fav-id="<?= (int)$p['product_id'] ?>" title="<?= $mlIsFav ? 'Remove from favorites' : 'Save to favorites' ?>" aria-label="<?= $mlIsFav ? 'Remove from favorites' : 'Save to favorites' ?>">
+                                <i class="bi <?= $mlIsFav ? 'bi-heart-fill' : 'bi-heart' ?>"></i>
+                            </button>
+                        <?php endif; ?>
                         <a href="<?= $pUrl ?>" class="ml-card-link">
                             <div class="ml-card-media">
                                 <?php if ($isLow): ?>

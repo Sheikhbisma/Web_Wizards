@@ -74,14 +74,14 @@ $marketImages = [
     height: 100%;
     transform: translate(-50%, -50%);
     object-fit: cover;
-    filter: brightness(0.92) contrast(1.08);
+    filter: brightness(1) contrast(1.05);
     transition: transform 0.1s linear;
 }
 .markets-video-overlay {
     position: absolute;
     inset: 0;
     z-index: 2;
-    background: linear-gradient(135deg, rgba(14, 24, 10, 0.55) 0%, rgba(28, 46, 18, 0.35) 50%, rgba(10, 18, 7, 0.62) 100%);
+    background: linear-gradient(135deg, rgba(14, 24, 10, 0.34) 0%, rgba(28, 46, 18, 0.18) 50%, rgba(10, 18, 7, 0.42) 100%);
 }
 
 .markets-hero-badge {
@@ -343,6 +343,78 @@ $marketImages = [
     transform: translateY(-2px);
     box-shadow: 0 6px 14px rgba(37, 57, 21, 0.25);
 }
+
+/* ---------------------------------------------------------
+   RESPONSIVE HERO
+   The filter is a single 62px nowrap row on desktop, which
+   crushes the input, day select and button together on a
+   phone. Below 992px it stacks and the row height is released.
+   --------------------------------------------------------- */
+@media (max-width: 991px) {
+    .markets-hero {
+        min-height: 420px;
+        padding: 52px 0 44px;
+    }
+
+    .market-search-filter-box {
+        flex-wrap: wrap !important;
+        height: auto !important;
+        max-width: 520px !important;
+        border-radius: 28px !important;
+        padding: 14px !important;
+        gap: 10px;
+    }
+
+    .market-search-input-wrap {
+        flex: 1 1 100% !important;
+        width: 100%;
+    }
+
+    .market-search-input {
+        width: 100%;
+    }
+
+    .market-day-select {
+        flex: 1 1 auto !important;
+    }
+
+    .market-search-submit-btn {
+        flex: 0 0 auto !important;
+    }
+}
+
+@media (max-width: 575px) {
+    .markets-hero {
+        min-height: 380px;
+        padding: 44px 0 38px;
+    }
+
+    .markets-hero-badge {
+        font-size: 0.7rem;
+        padding: 5px 15px;
+    }
+
+    .market-search-filter-box {
+        max-width: 100% !important;
+        padding: 12px !important;
+        border-radius: 24px !important;
+    }
+
+    .market-day-select,
+    .market-search-submit-btn {
+        flex: 1 1 100% !important;
+        width: 100%;
+        height: 46px;
+    }
+}
+
+/* Respect the OS reduced-motion setting: stop the parallax drift and
+   freeze the hero so a scroll does not smear the video frame. */
+@media (prefers-reduced-motion: reduce) {
+    .markets-hero-video {
+        transition: none;
+    }
+}
 </style>
 
 <!-- ============================================================
@@ -350,7 +422,7 @@ $marketImages = [
      ============================================================ -->
 <section class="markets-hero">
     <div class="markets-video-wrap">
-        <video autoplay muted loop playsinline class="markets-hero-video" id="marketsHeroVideo">
+        <video autoplay muted loop playsinline class="markets-hero-video" id="marketsHeroVideo" poster="<?php echo ML_asset('Uploads/img/home-last-section.jpeg'); ?>">
             <source src="<?php echo ML_asset('Uploads/market.mp4'); ?>" type="video/mp4">
         </video>
         <div class="markets-video-overlay"></div>
@@ -487,14 +559,49 @@ $marketImages = [
 <!-- Parallax Scroll Effect for Video Hero -->
 <script>
 (function() {
+    var videoEl = document.getElementById('marketsHeroVideo');
+    if (!videoEl) { return; }
+
+    /* Users who asked the OS to reduce motion get a still hero.
+       A scroll handler that keeps writing a new transform is exactly
+       the kind of movement this setting is meant to suppress. */
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (reduce.matches) {
+        videoEl.style.transform = 'translate(-50%, -50%)';
+        return;
+    }
+
     window.addEventListener('scroll', function() {
         var sc = window.scrollY;
-        var videoEl = document.getElementById('marketsHeroVideo');
-        if (videoEl && sc < 600) {
+        if (sc < 600) {
             videoEl.style.transform = 'translate(-50%, calc(-50% + ' + (sc * 0.3) + 'px))';
         }
     }, { passive: true });
 })();
 </script>
+
+<!-- ============================================================
+     ALL MARKETS ON ONE MAP, WITH DIRECTIONS
+     Shared Leaflet map, identical to the home page map. Placed
+     after the listing so the grid stays the first thing read.
+     ============================================================ -->
+<?php
+$pmMapId  = 'mlpMarketsMap';
+$pmPoints = [];
+foreach ($markets as $mk) {
+    $pmPoints[] = [
+        'lat'  => (float)$mk['latitude'],
+        'lng'  => (float)$mk['longitude'],
+        'name' => $mk['market_name'],
+        'kind' => 'market',
+        'addr' => $mk['address'] ?? '',
+        'url'  => ML_asset('market') . '?id=' . (int)$mk['market_id'],
+    ];
+}
+$pmTitle  = 'All Markets On One Map';
+$pmKicker = 'Pickup Locations';
+$pmSub    = 'Every hub currently listed above is pinned here. Open directions to the one nearest you.';
+include __DIR__ . '/partials/pickup-map.php';
+?>
 
 <?php include __DIR__ . '/../../../public/components/footer.php'; ?>

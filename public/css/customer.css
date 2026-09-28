@@ -4547,11 +4547,20 @@
     box-shadow: 0 24px 48px -28px rgba(64, 84, 58, .45);
 }
 
-#mlpHomeMap {
+/* Height lives on a class, not an id. An id rule only matched the home
+   page map, so every other map in the project (farmer, market, markets)
+   collapsed to zero height and rendered as an empty box. */
+.mlp-map-canvas {
     width: 100%;
     height: 440px;
     border-radius: 18px;
     background: var(--ml-sage-2);
+    z-index: 1;
+}
+
+/* Leaflet needs the canvas to be a positioned block or it cannot size
+   its own pan/zoom layers correctly. */
+.mlp-map-canvas.leaflet-container {
     z-index: 1;
 }
 
@@ -4675,7 +4684,7 @@
 
 @media (max-width: 991px) {
     .mlp-map-grid { grid-template-columns: minmax(0, 1fr); }
-    #mlpHomeMap { height: 340px; }
+    .mlp-map-canvas { height: 340px; }
     .mlp-map-list { max-height: 300px; }
 }
 
@@ -6761,3 +6770,138 @@
 .ml-footer-redesign.is-illuminated .ml-footer-bottom.illuminated-text {
     background: rgba(31, 58, 46, 0.04) !important;
 }
+
+/* ============================================================
+   FAVORITE BUTTONS
+   The hearts on the product page, the markets grid, the products
+   grid and the favorites list all existed in markup, but no rule
+   targeted them anywhere in the project. They rendered as raw
+   default <button> chrome sitting in the normal flow, so they were
+   effectively invisible and unclickable. One shared shape, then a
+   per-context placement.
+   ============================================================ */
+.ml-fav {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 1px solid rgba(30, 38, 23, .10);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .94);
+    color: var(--ml-ink-soft);
+    font-size: 1.05rem;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(30, 38, 23, .14);
+    transition: transform .18s ease, color .18s ease, background .18s ease;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+.ml-fav:hover { transform: scale(1.12); background: #fff; color: var(--ml-salmon); }
+.ml-fav:active { transform: scale(.94); }
+.ml-fav:focus-visible { outline: 2px solid var(--ml-green); outline-offset: 2px; }
+.ml-fav i { line-height: 1; pointer-events: none; }
+.ml-fav.is-fav,
+.ml-fav.active { color: var(--ml-salmon); background: #fff; }
+
+/* Existing markup in product.php / markets.php used their own names. The
+   shared shape above is repeated rather than inherited, because plain CSS
+   has no way to alias one selector to another. */
+.fav-btn {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid rgba(30, 38, 23, .10);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .94);
+    color: var(--ml-ink-soft);
+    font-size: 1.15rem;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(30, 38, 23, .14);
+    transition: transform .18s ease, color .18s ease, background .18s ease;
+}
+.fav-btn:hover { transform: scale(1.12); background: #fff; color: var(--ml-salmon); }
+.fav-btn.is-fav,
+.fav-btn.active { color: var(--ml-salmon); background: #fff; }
+
+.market-fav-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .92);
+    color: var(--ml-ink-soft);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(30, 38, 23, .16);
+    transition: transform .18s ease, color .18s ease;
+}
+.market-fav-btn:hover { transform: scale(1.12); color: var(--ml-salmon); }
+.market-fav-btn.is-fav { color: var(--ml-salmon); }
+
+/* The hearts sit absolutely, so their wrapper needs to be the positioning
+   context. Without this the heart escapes to the nearest positioned
+   ancestor and lands somewhere off the image. */
+.market-card-img-wrap,
+.ml-card-media,
+.prod-gallery-main { position: relative; }
+
+/* Favorites list rows: a small inline remove control, not a floating heart. */
+.ml-fav-row-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid var(--ml-line);
+    border-radius: 50%;
+    background: #fff;
+    color: var(--ml-ink-soft);
+    cursor: pointer;
+    transition: color .18s ease, border-color .18s ease;
+}
+.ml-fav-row-btn:hover { color: var(--ml-salmon); border-color: var(--ml-salmon); }
+
+@media (max-width: 575px) {
+    .ml-fav { width: 34px; height: 34px; font-size: .95rem; top: 8px; right: 8px; }
+    .fav-btn { width: 38px; height: 38px; font-size: 1rem; top: 12px; right: 12px; }
+}
+
+/* "Rate N items" marker on a completed order. Deliberately the strongest
+   button in the row, because the alternative is a review nobody writes. */
+.review-pending {
+    background: var(--ml-amber);
+    border: 1px solid var(--ml-amber);
+    color: #fff;
+}
+.review-pending:hover { background: #cf8410; border-color: #cf8410; color: #fff; }
+.review-pending i { color: #fff; }
+
+/* Deep link target for the Rate button. The modal is opened by JS, so the
+   anchor cannot scroll to it, but it still needs to exist or the URL carries
+   a dead fragment. */
+#review { scroll-margin-top: 90px; }
